@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "İletişim bilgileri";
+}
+<div class="row">
+    <div class="col-6">
+        <main aria-labelledby="title">
+            <h2 id="title">@ViewBag.Title</h2>
+            <address>
+                <abbr title="Phone">P:</abbr>
+                425.555.0100
+            </address>
+            <address>
+                <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
+                <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+            </address>
+        </main>
+    </div>
+    <div class="col-6">
+        @using (Html.BeginForm())
+        {
+            <table>
+                <tr>
+                    <td>Ad </td>
+                    <td>@Html.TextBox("txtAd")</td>
+                    <td>Soyad </td>
+                    <td>@Html.TextBox("txtSoyad")</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>@Html.TextBox("email")</td>
+                    <td>Konu</td>
+                    <td colspan="3">@Html.TextBox("konu")</td>
+                </tr>
+                <tr>
+                    <td>Mesaj</td>
+                    <td>@Html.TextArea("mesaj")</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" value="Gönder" />
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+</div>
+

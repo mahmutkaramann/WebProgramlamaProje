@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<Users> signInManager; //Dependency Injection (bağımlılık enjeksiyonu) satırıdır.
+@* kod sayesinde: Kullanıcının giriş yapıp yapmadığı kontrol edilebilir, Oturum durumu öğrenilebilir, 
+   Logout (çıkış) işlemleri tetiklenebilir. *@ 
+
+<ul class="navbar-nav ms-auto">
+    @if (signInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+             <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout" >Çıkış Yap</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kaydol</a>
+        </li>
+    }
+
+</ul>
