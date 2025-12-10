@@ -1,0 +1,41 @@
+﻿@model SporSalonu.Models.Antrenorler
+
+@{
+    ViewData["Title"] = "Antrenör Sil";
+}
+
+<h1>Antrenör Sil</h1>
+
+<h3>Silmek istediğinize emin misiniz?</h3>
+<div>
+    <h4>Antrenör</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AntAd)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AntAd)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AntSoyad)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AntSoyad)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AntUzmanlik)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AntUzmanlik)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="AntId" />
+        <input type="submit" value="Sil" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>

@@ -27,7 +27,8 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     options.SignIn.RequireConfirmedEmail = false;
 })
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddErrorDescriber<TurkishIdentityErrorDescriber>(); // Türkçe hata mesajlarý için.
 
 var app = builder.Build();
 

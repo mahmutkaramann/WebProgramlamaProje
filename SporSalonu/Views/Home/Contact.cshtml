@@ -1,47 +1,137 @@
 ﻿@{
-    ViewBag.Title = "İletişim bilgileri";
+    ViewData["Title"] = "İletişim";
+    Layout = "~/Views/Shared/_ContactLayout.cshtml";
 }
-<div class="row">
-    <div class="col-6">
-        <main aria-labelledby="title">
-            <h2 id="title">@ViewBag.Title</h2>
-            <address>
-                <abbr title="Phone">P:</abbr>
-                425.555.0100
-            </address>
-            <address>
-                <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-                <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-            </address>
-        </main>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4 text-danger">İletişim Bilgileri</h1>
+            <p class="text-center mb-5">Sorularınız ve görüşleriniz için bize ulaşabilirsiniz.</p>
+        </div>
     </div>
-    <div class="col-6">
-        @using (Html.BeginForm())
-        {
-            <table>
-                <tr>
-                    <td>Ad </td>
-                    <td>@Html.TextBox("txtAd")</td>
-                    <td>Soyad </td>
-                    <td>@Html.TextBox("txtSoyad")</td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td>@Html.TextBox("email")</td>
-                    <td>Konu</td>
-                    <td colspan="3">@Html.TextBox("konu")</td>
-                </tr>
-                <tr>
-                    <td>Mesaj</td>
-                    <td>@Html.TextArea("mesaj")</td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="submit" value="Gönder" />
-                    </td>
-                </tr>
-            </table>
-        }
+
+    <div class="row g-4">
+        <!-- İletişim Bilgileri -->
+        <div class="col-lg-6 col-md-6">
+            <div class="contact-info-card p-4 shadow rounded h-100">
+                <h2 class="text-danger mb-4">İletişim Bilgilerimiz</h2>
+
+                <div class="mb-4">
+                    <h4 class="text-danger mb-3">Adres</h4>
+                    <p class="mb-2">
+                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                        Serdivan / Sakarya
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-danger mb-3">Telefon</h4>
+                    <p class="mb-2">
+                        <i class="fas fa-phone text-danger me-2"></i>
+                        (555) 555 55 55
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-danger mb-3">E-posta</h4>
+                    <p class="mb-1">
+                        <i class="fas fa-envelope text-danger me-2"></i>
+                        sporsalonu@gmail.com
+                    </p>
+                    <p class="mb-1">
+                        <i class="fas fa-headset text-danger me-2"></i>
+                        destek@sporsalonu.com
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-danger mb-3">Çalışma Saatleri</h4>
+                    <p class="mb-1">
+                        <i class="fas fa-clock text-danger me-2"></i>
+                        Pazartesi - Cumartesi: 06:00 - 23:00
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-clock text-danger me-2"></i>
+                        Pazar: 08:00 - 20:00
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <h4 class="text-danger mb-3">Sosyal Medya</h4>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İletişim Formu -->
+        <div class="col-lg-6 col-md-6">
+            <div class="contact-form-card p-4 shadow rounded h-100">
+                <h2 class="text-danger mb-4">Bize Mesaj Gönderin</h2>
+
+                @using (Html.BeginForm("Contact", "Home", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="txtAd" class="form-label">Adınız *</label>
+                                @Html.TextBox("txtAd", null, new { @class = "form-control", required = "required", placeholder = "Adınızı giriniz" })
+                                <div class="invalid-feedback">Lütfen adınızı giriniz.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="txtSoyad" class="form-label">Soyadınız *</label>
+                                @Html.TextBox("txtSoyad", null, new { @class = "form-control", required = "required", placeholder = "Soyadınızı giriniz" })
+                                <div class="invalid-feedback">Lütfen soyadınızı giriniz.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email" class="form-label">E-posta Adresiniz *</label>
+                                @Html.TextBox("email", null, new { @class = "form-control", type = "email", required = "required", placeholder = "ornek@email.com" })
+                                <div class="invalid-feedback">Lütfen geçerli bir e-posta adresi giriniz.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="konu" class="form-label">Konu *</label>
+                                @Html.TextBox("konu", null, new { @class = "form-control", required = "required", placeholder = "Mesaj konusu" })
+                                <div class="invalid-feedback">Lütfen konu giriniz.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="mesaj" class="form-label">Mesajınız *</label>
+                                @Html.TextArea("mesaj", null, new { @class = "form-control", rows = "5", required = "required", placeholder = "Mesajınızı buraya yazınız..." })
+                                <div class="invalid-feedback">Lütfen mesajınızı giriniz.</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-danger btn-lg w-100">
+                                <i class="fas fa-paper-plane me-2"></i> Mesajı Gönder
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
-

@@ -9,6 +9,9 @@ namespace SporSalonu.Data
         public AppDbContext(DbContextOptions options) : base(options) 
         {
         }
+
+        public DbSet<Antrenorler> Antrenorler { get; set; }
+
         // Alternatif olarak:
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -18,4 +21,5 @@ namespace SporSalonu.Data
             }
         }
     }
+
 }
