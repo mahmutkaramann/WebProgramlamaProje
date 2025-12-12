@@ -1,4 +1,24 @@
-﻿/* footer.css */
+﻿/* footer.css en üstüne */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+    body > .container {
+        flex: 1 0 auto;
+    }
+
+.footer {
+    flex-shrink: 0;
+}
+
+
+/* footer.css */
 .footer {
     background-color: #212529 !important;
     color: #fff !important;
