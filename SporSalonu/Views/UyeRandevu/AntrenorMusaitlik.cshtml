@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "Antrenör Müsaitlik Saatleri";
+    var antrenor = ViewBag.Antrenor as YeniSalon.Models.Antrenor;
+    var musaitlikGruplari = ViewBag.MusaitlikGruplari as List<YeniSalon.Controllers.AntrenorMusaitlikViewModel>;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Antrenör Müsaitlik Saatleri</h3>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Yeni Randevu
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Antrenör Bilgileri -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>@antrenor?.Ad @antrenor?.Soyad</h5>
+                                <p class="mb-1"><strong>Uzmanlık:</strong> @antrenor?.UzmanlikAlanlari</p>
+                                <p class="mb-0"><strong>Deneyim:</strong> @antrenor?.DeneyimYili yıl</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                @if (!string.IsNullOrEmpty(antrenor?.ProfilFotoUrl))
+                                {
+                                    <img src="@antrenor.ProfilFotoUrl" alt="Profil Fotoğrafı" class="img-thumbnail" style="width: 100px; height: 100px;">
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                        <i class="fas fa-user fa-3x"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!musaitlikGruplari.Any())
+                    {
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                            <h4>Antrenör Müsaitlik Saati Tanımlanmamış</h4>
+                            <p class="mb-0">Bu antrenör henüz müsaitlik saati tanımlamamıştır. Lütfen daha sonra tekrar kontrol edin.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Müsaitlik Saatleri -->
+                        <div class="row">
+                            @foreach (var gun in musaitlikGruplari)
+                            {
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-calendar-day text-primary me-2"></i>
+                                                @gun.GunAdi
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            @if (gun.Saatler.Any())
+                                            {
+                                                <div class="list-group">
+                                                    @foreach (var saat in gun.Saatler)
+                                                    {
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <i class="fas fa-clock text-success me-2"></i>
+                                                                    <strong>@saat.Baslangic.ToString(@"hh\:mm")</strong> -
+                                                                    <strong>@saat.Bitis.ToString(@"hh\:mm")</strong>
+                                                                </div>
+                                                                <span class="badge bg-success">Müsait</span>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="alert alert-light text-center mb-0">
+                                                    <i class="fas fa-times-circle text-muted"></i>
+                                                    <p class="mb-0">Bu gün için müsaitlik saati bulunmamaktadır.</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Açıklamalar -->
+                        <div class="alert alert-secondary mt-4">
+                            <h6><i class="fas fa-info-circle me-2"></i> Müsaitlik Saatleri Hakkında</h6>
+                            <ul class="mb-0">
+                                <li>Müsaitlik saatleri antrenör tarafından belirlenmektedir.</li>
+                                <li>Randevular sadece bu saatler içinden alınabilir.</li>
+                                <li>Antrenör müsaitlik saatlerini düzenli olarak güncelleyebilir.</li>
+                                <li>Randevu talebiniz antrenör onayına tabidir.</li>
+                            </ul>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Randevu Oluşturmaya Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

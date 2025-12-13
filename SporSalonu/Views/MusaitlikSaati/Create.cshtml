@@ -1,0 +1,198 @@
+﻿@model YeniSalon.Models.MusaitlikSaati
+@{
+    ViewData["Title"] = "Yeni Müsaitlik Saati";
+    var antrenor = ViewBag.Antrenor as YeniSalon.Models.Antrenor;
+    var gunler = ViewBag.Gunler as List<SelectListItem>;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Yeni Müsaitlik Saati Ekle</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Antrenör Bilgileri -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>@antrenor.Ad @antrenor.Soyad</h5>
+                                <p class="mb-1"><strong>Uzmanlık:</strong> @antrenor.UzmanlikAlanlari</p>
+                                <p class="mb-0"><strong>Deneyim:</strong> @antrenor.DeneyimYili yıl</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                @if (!string.IsNullOrEmpty(antrenor.ProfilFotoUrl))
+                                {
+                                    <img src="@antrenor.ProfilFotoUrl" alt="Profil Fotoğrafı" class="img-thumbnail" style="width: 80px; height: 80px;">
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center d-inline-block"
+                                         style="width: 80px; height: 80px;">
+                                        <i class="fas fa-user fa-2x"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" asp-for="AntrenorId" value="@antrenor.AntrenorId" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Gun" class="form-label"></label>
+                                    <select asp-for="Gun" class="form-select" id="gunSelect">
+                                        <option value="">Gün Seçiniz</option>
+                                        @foreach (var gun in gunler)
+                                        {
+                                            <option value="@gun.Value">@gun.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Gun" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Saat Aralığı</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label small">Başlangıç</label>
+                                            <input asp-for="BaslangicSaati" type="time" class="form-control"
+                                                   step="900" id="baslangicSaati" />
+                                            <span asp-validation-for="BaslangicSaati" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small">Bitiş</label>
+                                            <input asp-for="BitisSaati" type="time" class="form-control"
+                                                   step="900" id="bitisSaati" />
+                                            <span asp-validation-for="BitisSaati" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seçilen saat aralığı önizleme -->
+                        <div id="saatOnizleme" class="alert alert-light d-none">
+                            <h6>Seçilen Müsaitlik Saati:</h6>
+                            <p class="mb-0">
+                                <span id="seciliGun" class="fw-bold"></span>
+                                <span id="seciliSaat" class="fw-bold"></span>
+                            </p>
+                        </div>
+
+                        <!-- Butonlar -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Kaydet
+                            </button>
+                            <a asp-action="Index" asp-route-antrenorId="@antrenor.AntrenorId" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Örnek Müsaitlik Saatleri -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Örnek Müsaitlik Saatleri</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Aşağıdaki örnek saat aralıklarını kullanabilirsiniz:</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body text-center p-2">
+                                    <small class="text-muted">Sabah Seansı</small>
+                                    <p class="mb-0 fw-bold">09:00 - 12:00</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body text-center p-2">
+                                    <small class="text-muted">Öğle Seansı</small>
+                                    <p class="mb-0 fw-bold">13:00 - 16:00</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body text-center p-2">
+                                    <small class="text-muted">Akşam Seansı</small>
+                                    <p class="mb-0 fw-bold">17:00 - 20:00</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body text-center p-2">
+                                    <small class="text-muted">Tam Gün</small>
+                                    <p class="mb-0 fw-bold">09:00 - 18:00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Gün ve saat değiştiğinde önizleme göster
+            function updatePreview() {
+                var gunSelect = $('#gunSelect');
+                var baslangic = $('#baslangicSaati').val();
+                var bitis = $('#bitisSaati').val();
+                var seciliGunText = gunSelect.find('option:selected').text();
+
+                if (seciliGunText && baslangic && bitis) {
+                    $('#saatOnizleme').removeClass('d-none');
+                    $('#seciliGun').text(seciliGunText + ':');
+                    $('#seciliSaat').text(baslangic + ' - ' + bitis);
+                } else {
+                    $('#saatOnizleme').addClass('d-none');
+                }
+            }
+
+            $('#gunSelect, #baslangicSaati, #bitisSaati').change(updatePreview);
+
+            // Bitiş saatinin başlangıçtan sonra olmasını kontrol et
+            $('#baslangicSaati, #bitisSaati').change(function() {
+                var baslangic = $('#baslangicSaati').val();
+                var bitis = $('#bitisSaati').val();
+
+                if (baslangic && bitis && baslangic >= bitis) {
+                    alert('Bitiş saati başlangıç saatinden sonra olmalıdır.');
+                    $('#bitisSaati').val('');
+                }
+            });
+
+            // Örnek saatleri hızlı ekleme
+            $('.card.bg-light').click(function() {
+                var saatText = $(this).find('.fw-bold').text();
+                var saatler = saatText.split(' - ');
+
+                if (saatler.length === 2) {
+                    $('#baslangicSaati').val(saatler[0]);
+                    $('#bitisSaati').val(saatler[1]);
+                    updatePreview();
+                }
+            });
+        });
+    </script>
+}

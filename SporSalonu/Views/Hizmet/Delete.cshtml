@@ -1,0 +1,62 @@
+﻿@model YeniSalon.Models.Hizmet
+
+@{
+    ViewData["Title"] = "Hizmet Sil";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="text-center">Hizmet Silme Onayı</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle"></i> Uyarı!
+                        </h5>
+                        <p>Bu hizmeti silmek istediğinizden emin misiniz?</p>
+                        <p class="mb-0"><strong>Bu işlem geri alınamaz!</strong></p>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Hizmet Adı:</dt>
+                        <dd class="col-sm-8">@Model.HizmetAdi</dd>
+
+                        <dt class="col-sm-4">Kategori:</dt>
+                        <dd class="col-sm-8">@Model.Kategori</dd>
+
+                        <dt class="col-sm-4">Süre:</dt>
+                        <dd class="col-sm-8">@Model.SureDakika dakika</dd>
+
+                        <dt class="col-sm-4">Ücret:</dt>
+                        <dd class="col-sm-8">@Model.Ucret.ToString("C2")</dd>
+
+                        <dt class="col-sm-4">Salon:</dt>
+                        <dd class="col-sm-8">@Model.Salon?.SalonAdi</dd>
+                    </dl>
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+
+                    <form asp-action="DeleteConfirmed" method="post">
+                        <input type="hidden" asp-for="HizmetId" />
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Sil
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

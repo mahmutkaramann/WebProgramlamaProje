@@ -1,0 +1,341 @@
+﻿@model YeniSalon.Models.Randevu
+
+@{
+    ViewData["Title"] = "Yeni Randevu Oluştur";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Yeni Randevu Oluştur - <span id="stepIndicator">1. Adım</span></h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" id="randevuForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- ADIM 1: Temel Bilgiler -->
+                        <div id="step1" class="step-content">
+                            <div class="row">
+                                <!-- Üye Seçimi -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="KullaniciId" class="form-label"></label>
+                                    <select asp-for="KullaniciId" class="form-select" required>
+                                        <option value="">Üye Seçiniz</option>
+                                        @foreach (var item in (List<SelectListItem>)ViewBag.Kullanicilar)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="KullaniciId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Antrenör Seçimi -->
+                                <h4>Burası Randevu Create sayfası</h4>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="AntrenorId" class="form-label"></label>
+                                    <select asp-for="AntrenorId" class="form-select" id="antrenorSelect" required>
+                                        <option value="">Antrenör Seçiniz</option>
+                                        @foreach (var item in (List<SelectListItem>)ViewBag.Antrenorler)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="AntrenorId" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Hizmet Seçimi -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="HizmetId" class="form-label"></label>
+                                    <select asp-for="HizmetId" class="form-select" id="hizmetSelect" required>
+                                        <option value="">Hizmet Seçiniz</option>
+                                        @foreach (var item in (List<SelectListItem>)ViewBag.Hizmetler)
+                                        {
+                                            <option value="@item.Value" data-sure="@item.Text.Split('-').Last().Trim().Split(' ')[0]">@item.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="HizmetId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Durum Seçimi -->
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Durum" class="form-label"></label>
+                                    <select asp-for="Durum" class="form-select">
+                                        @foreach (var item in (List<SelectListItem>)ViewBag.Durumlar)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Durum" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Not -->
+                            <div class="mb-3">
+                                <label asp-for="Not" class="form-label"></label>
+                                <textarea asp-for="Not" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Not" class="text-danger"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" id="nextStep1" class="btn btn-primary">
+                                    Sonraki Adım <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ADIM 2: Tarih ve Saat Seçimi - BASİT VERSİYON -->
+                        <div id="step2" class="step-content" style="display: none;">
+                            <div class="card mb-4">
+                                <div class="card-body bg-light">
+                                    <h6>Randevu Özeti:</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Antrenör:</strong> <span id="selectedAntrenor">-</span></p>
+                                            <p><strong>Hizmet:</strong> <span id="selectedHizmet">-</span></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Süre:</strong> <span id="selectedSure">-</span> dakika</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3">Lütfen bir tarih ve saat seçin:</h5>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tarih:</label>
+                                    <select id="dateSelect" class="form-select">
+                                        <option value="">Tarih Seçin</option>
+                                        <option value="2025-01-15">Pazartesi, 15 Ocak 2025</option>
+                                        <option value="2025-01-22">Pazartesi, 22 Ocak 2025</option>
+                                        <option value="2025-01-23">Salı, 23 Ocak 2025</option>
+                                        <option value="2025-01-24">Çarşamba, 24 Ocak 2025</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Saat:</label>
+                                    <select id="timeSelect" class="form-select">
+                                        <option value="">Saat Seçin</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- SEÇİLEN TARİH GÖSTERİMİ -->
+                            <div class="mb-4">
+                                <div class="alert alert-secondary">
+                                    <p><strong>Seçilen Randevu:</strong> <span id="selectedDateTimeText">-</span></p>
+                                    <input type="hidden" asp-for="RandevuTarihi" id="selectedDateTimeInput" />
+                                </div>
+                            </div>
+
+                            <!-- MÜSAİTLİK KONTROLÜ -->
+                            <div class="mb-3">
+                                <button type="button" id="musaitlikKontrol" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-search"></i> Müsaitlik Kontrol Et
+                                </button>
+                                <div id="musaitlikSonucu" class="alert d-none mt-2"></div>
+                            </div>
+
+                            <!-- DEVAM ET BUTONU - HER ZAMAN AKTİF -->
+                            <div class="mb-4">
+                                <button type="button" id="devamEtBtn" class="btn btn-success w-100">
+                                    <i class="fas fa-check"></i> DEVAM ET
+                                </button>
+                            </div>
+
+                            <!-- GERİ DÖN BUTONU -->
+                            <div class="mb-3">
+                                <button type="button" id="prevStep2" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-arrow-left"></i> Geri Dön
+                                </button>
+                            </div>
+
+                            <!-- FORMU GÖNDER BUTONU -->
+                            <div style="display: none;" id="submitSection">
+                                <div class="alert alert-success mb-3">
+                                    <i class="fas fa-check-circle"></i> Tüm bilgiler tamamlandı. Randevuyu kaydedebilirsiniz.
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Randevuyu Kaydet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+        $(document).ready(function() {
+            let currentStep = 1;
+            let isAvailabilityChecked = false;
+            let isAvailable = false;
+
+            // Adım 1 -> Adım 2 geçişi
+            $('#nextStep1').click(function() {
+                // Form doğrulama
+                const requiredFields = $('#step1 select[required], #step1 input[required]');
+                let isValid = true;
+
+                requiredFields.each(function() {
+                    if (!$(this).val()) {
+                        isValid = false;
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    alert('Lütfen tüm gerekli alanları doldurun.');
+                    return;
+                }
+
+                // Seçilen bilgileri göster
+                const antrenorText = $('#antrenorSelect option:selected').text();
+                const hizmetText = $('#hizmetSelect option:selected').text();
+                const sure = $('#hizmetSelect option:selected').data('sure');
+
+                $('#selectedAntrenor').text(antrenorText);
+                $('#selectedHizmet').text(hizmetText);
+                $('#selectedSure').text(sure || '60');
+
+                // Adım değiştir
+                $('#step1').hide();
+                $('#step2').show();
+                $('#stepIndicator').text('2. Adım');
+                currentStep = 2;
+            });
+
+            // Adım 2 -> Adım 1 geri dönüş
+            $('#prevStep2').click(function() {
+                $('#step2').hide();
+                $('#step1').show();
+                $('#stepIndicator').text('1. Adım');
+                currentStep = 1;
+            });
+
+            // Tarih veya saat değiştiğinde
+            $('#dateSelect, #timeSelect').change(function() {
+                const tarih = $('#dateSelect').val();
+                const saat = $('#timeSelect').val();
+
+                if (tarih && saat) {
+                    const tarihObj = new Date(tarih + 'T' + saat);
+                    const formattedDate = tarihObj.toLocaleDateString('tr-TR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    $('#selectedDateTimeText').text(formattedDate);
+                    $('#selectedDateTimeInput').val(tarih + 'T' + saat);
+
+                    // Müsaitlik kontrolü butonunu aktif et
+                    $('#musaitlikKontrol').prop('disabled', false);
+                } else {
+                    $('#selectedDateTimeText').text('-');
+                    $('#selectedDateTimeInput').val('');
+                    $('#musaitlikKontrol').prop('disabled', true);
+                }
+            });
+
+            // Müsaitlik kontrolü
+            $('#musaitlikKontrol').click(function() {
+                const tarih = $('#dateSelect').val();
+                const saat = $('#timeSelect').val();
+
+                if (!tarih || !saat) {
+                    alert('Lütfen önce tarih ve saat seçin.');
+                    return;
+                }
+
+                const antrenorId = $('#antrenorSelect').val();
+                const hizmetSelect = $('#hizmetSelect');
+                const sureDakika = hizmetSelect.find('option:selected').data('sure') || 60;
+                const dateTime = tarih + 'T' + saat;
+
+                // Yükleniyor göster
+                const sonucDiv = $('#musaitlikSonucu');
+                sonucDiv.removeClass('d-none alert-success alert-danger alert-warning');
+                sonucDiv.addClass('alert-warning');
+                sonucDiv.html('<i class="fas fa-spinner fa-spin"></i> Kontrol ediliyor...');
+
+                // API çağrısı
+                $.get('/Randevu/CheckAvailability', {
+                    antrenorId: antrenorId,
+                    randevuTarihi: dateTime,
+                    sureDakika: sureDakika
+                }, function(response) {
+                    sonucDiv.removeClass('alert-warning');
+                    isAvailabilityChecked = true;
+
+                    if (response.Musait) {
+                        sonucDiv.addClass('alert-success');
+                        sonucDiv.html('<i class="fas fa-check-circle"></i> Antrenör müsait. Randevu oluşturabilirsiniz.');
+                        isAvailable = true;
+                    } else {
+                        sonucDiv.addClass('alert-danger');
+                        sonucDiv.html('<i class="fas fa-exclamation-circle"></i> Antrenör müsait değil.');
+                        isAvailable = false;
+                    }
+                }).fail(function() {
+                    sonucDiv.removeClass('alert-warning');
+                    sonucDiv.addClass('alert-secondary');
+                    sonucDiv.html('<i class="fas fa-info-circle"></i> Kontrol yapılamadı. Devam edebilirsiniz.');
+                    isAvailabilityChecked = false;
+                    isAvailable = true;
+                });
+            });
+
+            // DEVAM ET butonu - HER ZAMAN AKTİF
+            $('#devamEtBtn').click(function() {
+                const tarih = $('#dateSelect').val();
+                const saat = $('#timeSelect').val();
+
+                if (!tarih || !saat) {
+                    alert('Lütfen bir tarih ve saat seçin.');
+                    return;
+                }
+
+                if (isAvailabilityChecked && !isAvailable) {
+                    if (!confirm('Antrenör müsait değil. Yine de devam etmek istiyor musunuz?')) {
+                        return;
+                    }
+                }
+
+                // Devam Et butonunu gizle, Kaydet butonunu göster
+                $('#devamEtBtn').hide();
+                $('#prevStep2').hide();
+                $('#submitSection').show();
+            });
+        });
+    </script>
+}

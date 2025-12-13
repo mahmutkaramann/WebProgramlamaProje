@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Tarih ve Saat Seçimi";
+    var antrenor = ViewBag.Antrenor as YeniSalon.Models.Antrenor;
+    var hizmet = ViewBag.Hizmet as YeniSalon.Models.Hizmet;
+    var availableDates = ViewBag.AvailableDates as List<YeniSalon.Controllers.AvailableDateViewModel>;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Yeni Randevu - 2. Adım</h3>
+                    <p class="text-center text-muted mb-0">Tarih ve saat seçimi</p>
+                </div>
+                <div class="card-body">
+                    <!-- Seçim Bilgileri -->
+                    <div class="alert alert-info">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Antrenör:</strong> @antrenor?.Ad @antrenor?.Soyad
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Hizmet:</strong> @hizmet?.HizmetAdi (@hizmet?.SureDakika dk - @hizmet?.Ucret.ToString("C2"))
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!availableDates.Any())
+                    {
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                            <h4>Üzgünüz!</h4>
+                            <p>Seçtiğiniz antrenörün önümüzdeki 14 gün için müsait saati bulunmamaktadır.</p>
+                            <div class="mt-3">
+                                <a asp-action="Create" class="btn btn-primary me-2">
+                                    <i class="fas fa-arrow-left"></i> Antrenör Değiştir
+                                </a>
+                                <a asp-action="AntrenorMusaitlik" asp-route-antrenorId="@ViewBag.AntrenorId" class="btn btn-info">
+                                    <i class="fas fa-calendar-alt"></i> Müsaitlik Saatlerini Görüntüle
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Tarih Seçimi -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">Lütfen bir tarih seçin:</h5>
+                            <div class="row g-3" id="dateSelection">
+                                @foreach (var dateInfo in availableDates)
+                                {
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="card date-card" data-date="@dateInfo.Date.ToString("yyyy-MM-dd")">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title mb-1">@dateInfo.DayName</h6>
+                                                <div class="display-6 text-primary">@dateInfo.Date.Day</div>
+                                                <small class="text-muted">@dateInfo.Date.ToString("MMMM yyyy")</small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-success">
+                                                        @dateInfo.AvailableSlots.Count() müsait saat
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Saat Seçimi -->
+                        <div id="timeSelection" class="d-none">
+                            <h5 class="mb-3">Lütfen bir saat seçin:</h5>
+                            <div class="row g-3" id="timeSlotsContainer">
+                                <!-- Saatler buraya dinamik olarak eklenecek -->
+                            </div>
+                        </div>
+
+                        <!-- Randevu Formu -->
+                        <form id="appointmentForm" asp-action="CreateAppointment" method="post" class="d-none">
+                            <input type="hidden" name="AntrenorId" value="@ViewBag.AntrenorId" />
+                            <input type="hidden" name="HizmetId" value="@ViewBag.HizmetId" />
+                            <input type="hidden" name="RandevuTarihi" id="selectedDateTime" />
+                            <input type="hidden" name="DurationMinutes" value="@hizmet?.SureDakika" />
+
+                            <div class="mb-3">
+                                <label for="Not" class="form-label">Not (Opsiyonel)</label>
+                                <textarea name="Not" class="form-control" rows="3" placeholder="Randevu için eklemek istediğiniz not..."></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-calendar-check"></i> Randevu Talebi Oluştur
+                                </button>
+                                <button type="button" id="changeDate" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Tarihi Değiştir
+                                </button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .date-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+            .date-card:hover {
+                transform: translateY(-5px);
+                border-color: #0d6efd;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+            .date-card.selected {
+                border-color: #0d6efd;
+                background-color: #f0f8ff;
+            }
+
+        .time-slot {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+            .time-slot:hover {
+                background-color: #f8f9fa;
+                border-color: #0d6efd;
+            }
+
+            .time-slot.selected {
+                background-color: #d1e7dd;
+                border-color: #198754;
+                color: #0f5132;
+            }
+
+            .time-slot.unavailable {
+                background-color: #f8d7da;
+                border-color: #f1aeb5;
+                color: #721c24;
+                cursor: not-allowed;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var selectedDate = null;
+            var selectedTime = null;
+
+            // Tarih kartı tıklama
+            $('.date-card').click(function() {
+                var date = $(this).data('date');
+                selectedDate = date;
+
+                // Tüm tarih kartlarını temizle
+                $('.date-card').removeClass('selected');
+                // Seçili olanı işaretle
+                $(this).addClass('selected');
+
+                // Tarih bilgisini al
+                var dateInfo = @Html.Raw(Json.Serialize(availableDates));
+                var selectedDateInfo = dateInfo.find(d => d.date === date);
+
+                if (selectedDateInfo) {
+                    // Saatleri göster
+                    showTimeSlots(selectedDateInfo);
+                    $('#timeSelection').removeClass('d-none');
+                    $('html, body').animate({
+                        scrollTop: $('#timeSelection').offset().top - 100
+                    }, 500);
+                }
+            });
+
+            // Tarihi değiştir butonu
+            $('#changeDate').click(function() {
+                $('#timeSelection').addClass('d-none');
+                $('#appointmentForm').addClass('d-none');
+                selectedTime = null;
+                $('.time-slot').removeClass('selected');
+            });
+
+            // Saat seçimi ve form gönderimi
+            $(document).on('click', '.time-slot:not(.unavailable)', function() {
+                selectedTime = $(this).data('time');
+
+                // Tüm saat slotlarını temizle
+                $('.time-slot').removeClass('selected');
+                // Seçili olanı işaretle
+                $(this).addClass('selected');
+
+                // Tarih ve saat bilgisini birleştir
+                var dateTimeString = selectedDate + 'T' + selectedTime;
+                $('#selectedDateTime').val(dateTimeString);
+
+                // Formu göster
+                $('#appointmentForm').removeClass('d-none');
+                $('html, body').animate({
+                    scrollTop: $('#appointmentForm').offset().top - 100
+                }, 500);
+            });
+
+            function showTimeSlots(dateInfo) {
+                var container = $('#timeSlotsContainer');
+                container.empty();
+
+                if (dateInfo.availableSlots && dateInfo.availableSlots.length > 0) {
+                    dateInfo.availableSlots.forEach(function(slot) {
+                        var startTime = formatTime(slot.startTime);
+                        var endTime = formatTime(slot.endTime);
+
+                        var timeSlotHtml = `
+                            <div class="col-md-3 col-sm-6">
+                                <div class="time-slot" data-time="${slot.startTime}">
+                                    <div class="fw-bold">${startTime}</div>
+                                    <div class="text-muted small">${endTime}'a kadar</div>
+                                    <div class="mt-2">
+                                        <span class="badge bg-success">Müsait</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        container.append(timeSlotHtml);
+                    });
+                }
+            }
+
+            function formatTime(timeString) {
+                var timeParts = timeString.split(':');
+                var hours = parseInt(timeParts[0]);
+                var minutes = timeParts[1];
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+
+                hours = hours % 12;
+                hours = hours ? hours : 12; // 0 should be 12
+
+                return hours + ':' + minutes + ' ' + ampm;
+            }
+
+            // Form gönderiminde kontrol
+            $('#appointmentForm').submit(function(e) {
+                if (!selectedDate || !selectedTime) {
+                    e.preventDefault();
+                    alert('Lütfen tarih ve saat seçiniz.');
+                    return false;
+                }
+
+                return true;
+            });
+        });
+    </script>
+}

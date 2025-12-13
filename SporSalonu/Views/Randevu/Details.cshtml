@@ -1,0 +1,286 @@
+﻿@model YeniSalon.Models.Randevu
+
+@{
+    ViewData["Title"] = "Randevu Detayları";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Randevu Detayları</h1>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.RandevuId" class="btn btn-warning me-2">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Sol Taraf: Temel Bilgiler -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Randevu Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Randevu ID:</dt>
+                        <dd class="col-sm-8">@Model.RandevuId</dd>
+
+                        <dt class="col-sm-4">Randevu Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.RandevuTarihi.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-4">Bitiş Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.BitisTarihi.ToString("HH:mm")</dd>
+
+                        <dt class="col-sm-4">Oluşturulma Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-4">Durum:</dt>
+                        <dd class="col-sm-8">
+                            @switch (Model.Durum)
+                            {
+                                case RandevuDurumu.Beklemede:
+                                    <span class="badge bg-warning">Beklemede</span>
+                                    break;
+                                case RandevuDurumu.Onaylandi:
+                                    <span class="badge bg-success">Onaylandı</span>
+                                    break;
+                                case RandevuDurumu.Tamamlandi:
+                                    <span class="badge bg-info">Tamamlandı</span>
+                                    break;
+                                case RandevuDurumu.IptalEdildi:
+                                    <span class="badge bg-danger">İptal Edildi</span>
+                                    break;
+                                case RandevuDurumu.Reddedildi:
+                                    <span class="badge bg-secondary">Reddedildi</span>
+                                    break;
+                                case RandevuDurumu.Gelmeyen:
+                                    <span class="badge bg-dark">Gelmeyen</span>
+                                    break;
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Not -->
+            @if (!string.IsNullOrEmpty(Model.Not))
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Not</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>@Model.Not</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Sağ Taraf: Kişi Bilgileri -->
+        <div class="col-md-6">
+            <!-- Üye Bilgileri -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Üye Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Kullanici != null)
+                    {
+                        <dl class="row">
+                            <dt class="col-sm-4">Ad Soyad:</dt>
+                            <dd class="col-sm-8">@Model.Kullanici.Ad @Model.Kullanici.Soyad</dd>
+
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">@Model.Kullanici.Email</dd>
+
+                            <dt class="col-sm-4">TC Kimlik No:</dt>
+                            <dd class="col-sm-8">@Model.Kullanici.TCKimlikNo</dd>
+
+                            <dt class="col-sm-4">Telefon:</dt>
+                            <dd class="col-sm-8">@(Model.Kullanici.PhoneNumber ?? "Belirtilmemiş")</dd>
+
+                            <dt class="col-sm-4">Üyelik Durumu:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.Kullanici.AktifMi)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Pasif</span>
+                                }
+                            </dd>
+                        </dl>
+                        <a asp-controller="Uye" asp-action="Details" asp-route-id="@Model.KullaniciId"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-user"></i> Üye Detayları
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Bu kullanıcı sistemden silinmiş.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Antrenör Bilgileri -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Antrenör Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Antrenor != null)
+                    {
+                        <dl class="row">
+                            <dt class="col-sm-4">Ad Soyad:</dt>
+                            <dd class="col-sm-8">@Model.Antrenor.Ad @Model.Antrenor.Soyad</dd>
+
+                            <dt class="col-sm-4">Uzmanlık:</dt>
+                            <dd class="col-sm-8">@Model.Antrenor.UzmanlikAlanlari</dd>
+
+                            <dt class="col-sm-4">Deneyim:</dt>
+                            <dd class="col-sm-8">@Model.Antrenor.DeneyimYili yıl</dd>
+
+                            <dt class="col-sm-4">Durum:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.Antrenor.AktifMi)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Pasif</span>
+                                }
+                            </dd>
+                        </dl>
+                        <a asp-controller="Antrenor" asp-action="Details" asp-route-id="@Model.AntrenorId"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-dumbbell"></i> Antrenör Detayları
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Bu antrenör sistemden silinmiş.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Hizmet Bilgileri -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Hizmet Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Hizmet != null)
+                    {
+                        <dl class="row">
+                            <dt class="col-sm-4">Hizmet Adı:</dt>
+                            <dd class="col-sm-8">@Model.Hizmet.HizmetAdi</dd>
+
+                            <dt class="col-sm-4">Kategori:</dt>
+                            <dd class="col-sm-8">@Model.Hizmet.Kategori</dd>
+
+                            <dt class="col-sm-4">Süre:</dt>
+                            <dd class="col-sm-8">@Model.Hizmet.SureDakika dakika</dd>
+
+                            <dt class="col-sm-4">Ücret:</dt>
+                            <dd class="col-sm-8">@Model.Hizmet.Ucret.ToString("C2")</dd>
+                        </dl>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Bu hizmet sistemden silinmiş.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İşlem Butonları -->
+    <div class="card">
+        <div class="card-body">
+            <div class="btn-group" role="group">
+                @if (Model.Durum == RandevuDurumu.Beklemede)
+                {
+                    <form asp-action="Approve" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@Model.RandevuId" />
+                        <button type="submit" class="btn btn-success me-2"
+                                onclick="return confirm('Bu randevuyu onaylamak istediğinize emin misiniz?')">
+                            <i class="fas fa-check"></i> Onayla
+                        </button>
+                    </form>
+
+                    <form asp-action="Reject" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@Model.RandevuId" />
+                        <button type="submit" class="btn btn-secondary me-2"
+                                onclick="return confirm('Bu randevuyu reddetmek istediğinize emin misiniz?')">
+                            <i class="fas fa-times"></i> Reddet
+                        </button>
+                    </form>
+                }
+
+                @if (Model.Durum == RandevuDurumu.Onaylandi)
+                {
+                    <form asp-action="Complete" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@Model.RandevuId" />
+                        <button type="submit" class="btn btn-info me-2"
+                                onclick="return confirm('Bu randevuyu tamamlandı olarak işaretlemek istediğinize emin misiniz?')">
+                            <i class="fas fa-check-double"></i> Tamamlandı
+                        </button>
+                    </form>
+
+                    <form asp-action="MarkAsNoShow" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@Model.RandevuId" />
+                        <button type="submit" class="btn btn-dark me-2"
+                                onclick="return confirm('Bu randevuyu gelmeyen olarak işaretlemek istediğinize emin misiniz?')">
+                            <i class="fas fa-user-times"></i> Gelmeyen
+                        </button>
+                    </form>
+                }
+
+                @if (Model.Durum != RandevuDurumu.IptalEdildi &&
+                                Model.Durum != RandevuDurumu.Tamamlandi &&
+                                Model.Durum != RandevuDurumu.Gelmeyen)
+                {
+                    <form asp-action="Cancel" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@Model.RandevuId" />
+                        <button type="submit" class="btn btn-danger me-2"
+                                onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')">
+                            <i class="fas fa-ban"></i> İptal Et
+                        </button>
+                    </form>
+                }
+
+                <a asp-action="Delete" asp-route-id="@Model.RandevuId" class="btn btn-outline-danger">
+                    <i class="fas fa-trash"></i> Sil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

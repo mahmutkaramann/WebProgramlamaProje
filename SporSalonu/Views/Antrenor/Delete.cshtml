@@ -1,0 +1,148 @@
+﻿@model YeniSalon.Models.Antrenor
+@{
+    ViewData["Title"] = "Antrenör Sil";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="text-center mb-0">Antrenör Sil</h3>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.AktifRandevuVarMi)
+                    {
+                        <div class="alert alert-warning">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Dikkat!</h5>
+                            <p>
+                                Bu antrenöre ait <strong>@ViewBag.AktifRandevuSayisi adet aktif randevu</strong> bulunmaktadır.
+                            </p>
+                            <p class="mb-0">
+                                Antrenörü silmek için önce tüm aktif randevuları iptal etmelisiniz.
+                            </p>
+                        </div>
+
+                        <div class="text-center">
+                            <a asp-action="Details" asp-route-id="@Model.AntrenorId"
+                               class="btn btn-info">
+                                <i class="fas fa-eye"></i> Antrenör Detayları
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Listeye Dön
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <h5><i class="fas fa-exclamation-circle"></i> Silme Onayı</h5>
+                            <p class="mb-0">
+                                Aşağıdaki antrenörü silmek istediğinize emin misiniz?
+                                Bu işlem geri alınamaz!
+                            </p>
+                        </div>
+
+                        <!-- Antrenör Bilgileri -->
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                @if (!string.IsNullOrEmpty(Model.ProfilFotoUrl))
+                                {
+                                    <img src="@Model.ProfilFotoUrl" alt="Profil Fotoğrafı"
+                                         class="img-thumbnail rounded-circle mb-3" style="width: 100px; height: 100px;">
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mb-3 mx-auto"
+                                         style="width: 100px; height: 100px;">
+                                        <i class="fas fa-user fa-2x"></i>
+                                    </div>
+                                }
+
+                                <h4>@Model.Ad @Model.Soyad</h4>
+
+                                @if (Model.Salon != null)
+                                {
+                                    <p class="mb-2">
+                                        <i class="fas fa-building"></i>
+                                        @Model.Salon.SalonAdi
+                                    </p>
+                                }
+
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-id-card"></i>
+                                    @Model.TCKimlikNo
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Detaylı Bilgiler -->
+                        <div class="mb-4">
+                            <dl class="row">
+                                <dt class="col-sm-4">Cinsiyet:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-@(Model.Cinsiyet == YeniSalon.Models.Cinsiyet.Erkek ? "primary" : "danger")">
+                                        @Model.Cinsiyet
+                                    </span>
+                                </dd>
+
+                                <dt class="col-sm-4">Deneyim:</dt>
+                                <dd class="col-sm-8">@Model.DeneyimYili yıl</dd>
+
+                                <dt class="col-sm-4">Uzmanlık:</dt>
+                                <dd class="col-sm-8">
+                                    @if (!string.IsNullOrEmpty(Model.UzmanlikAlanlari))
+                                    {
+                                        <span>@Model.UzmanlikAlanlari</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Belirtilmemiş</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Durum:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.AktifMi)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+
+                        <!-- Uyarılar -->
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-exclamation-triangle"></i> Silme işlemi şunları etkiler:</h6>
+                            <ul class="mb-0">
+                                <li>Antrenör pasif hale getirilecektir (soft delete)</li>
+                                <li>Antrenörün müsaitlik saatleri kaldırılacaktır</li>
+                                <li>Gelecekteki randevular iptal edilecektir</li>
+                                <li>Geçmiş randevular silinmeyecektir</li>
+                            </ul>
+                        </div>
+
+                        <!-- Silme Formu -->
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" name="id" value="@Model.AntrenorId" />
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-danger btn-lg">
+                                    <i class="fas fa-trash"></i> Evet, Sil
+                                </button>
+                                <a asp-action="Details" asp-route-id="@Model.AntrenorId"
+                                   class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Hayır, İptal Et
+                                </a>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,203 @@
+﻿@model YeniSalon.Controllers.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Paneli";
+    Layout = "_Layout"; // Eğer farklı bir layout kullanıyorsanız onu belirtin
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Admin Paneli</h1>
+    <p class="text-muted">Spor Salonu Yönetim Sistemi</p>
+
+    <!-- Dashboard Kartları -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Toplam Üye
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ToplamUye</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Toplam Antrenör
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ToplamAntrenor</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dumbbell fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Toplam Randevu
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ToplamRandevu</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Aktif Randevular
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.AktifRandevular</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hızlı Erişim Butonları -->
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-user-tie fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Antrenörler</h5>
+                    <p class="card-text">Antrenörleri yönetin</p>
+                    <a asp-controller="Antrenor" asp-action="Index" class="btn btn-primary btn-block">Yönet</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-list-alt fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Hizmetler</h5>
+                    <p class="card-text">Hizmetleri yönetin</p>
+                    <a asp-controller="Hizmet" asp-action="Index" class="btn btn-success btn-block">Yönet</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">Üyeler</h5>
+                    <p class="card-text">Üyeleri yönetin</p>
+                    <a asp-controller="Uye" asp-action="Index" class="btn btn-info btn-block">Yönet</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-calendar-alt fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">Randevular</h5>
+                    <p class="card-text">Randevuları yönetin</p>
+                    <a asp-controller="Randevu" asp-action="Index" class="btn btn-warning btn-block">Yönet</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-building fa-3x text-secondary mb-3"></i>
+                    <h5 class="card-title">Salonlar</h5>
+                    <p class="card-text">Salonları yönetin</p>
+                    <a asp-controller="Salon" asp-action="Index" class="btn btn-secondary btn-block">Yönet</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-robot fa-3x text-danger mb-3"></i>
+                    <h5 class="card-title">AI Önerileri</h5>
+                    <p class="card-text">Yapay zeka önerilerini görüntüleyin</p>
+                    <a asp-controller="AIEgzersiz" asp-action="Index" class="btn btn-danger btn-block">Görüntüle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son Aktivite Tablosu (Örnek) -->
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Son Aktivite</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Kullanıcı</th>
+                                    <th>Aktivite</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@DateTime.Now.AddHours(-1).ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>Admin</td>
+                                    <td>Yeni antrenör eklendi</td>
+                                    <td><span class="badge bg-success">Tamamlandı</span></td>
+                                </tr>
+                                <tr>
+                                    <td>@DateTime.Now.AddHours(-2).ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>Test Üye</td>
+                                    <td>Yeni randevu oluşturuldu</td>
+                                    <td><span class="badge bg-warning">Beklemede</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Basit bir chart örneği (isteğe bağlı)
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Admin paneli yüklendi');
+        });
+    </script>
+}

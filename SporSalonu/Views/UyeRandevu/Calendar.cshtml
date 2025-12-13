@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Randevu Takvimim";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Randevu Takvimim</h1>
+        <div>
+            <a asp-action="Create" class="btn btn-primary me-2">
+                <i class="fas fa-plus"></i> Yeni Randevu
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Liste Görünümü
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtreleme -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="antrenorId" class="form-label">Antrenör Filtresi</label>
+                    <select name="antrenorId" class="form-select">
+                        <option value="">Tüm Antrenörler</option>
+                        @foreach (var item in (List<SelectListItem>)ViewBag.Antrenorler)
+                        {
+                            <option value="@item.Value" selected="@(ViewBag.SecilenAntrenorId?.ToString() == item.Value)">
+                                @item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="tarih" class="form-label">Ay Seçin</label>
+                    <input type="month" name="tarih" class="form-control" value="@ViewBag.SecilenTarih">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filtrele
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Takvim -->
+    <div class="card">
+        <div class="card-body">
+            <div id="calendar" style="min-height: 600px;"></div>
+        </div>
+    </div>
+
+    <!-- Takvim Açıklamaları -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Renk Açıklamaları</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-warning p-2 mb-2" style="width: 100%;">Beklemede</div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-success p-2 mb-2" style="width: 100%;">Onaylandı</div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-info p-2 mb-2" style="width: 100%;">Tamamlandı</div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-danger p-2 mb-2" style="width: 100%;">İptal Edildi</div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-secondary p-2 mb-2" style="width: 100%;">Reddedildi</div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-dark p-2 mb-2" style="width: 100%;">Gelmeyen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <style>
+        .fc-event {
+            cursor: pointer;
+        }
+
+        .fc-daygrid-event {
+            border-radius: 4px;
+            padding: 2px 5px;
+        }
+
+        .fc-event-title {
+            font-weight: bold;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/tr.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            // Takvim verilerini hazırla
+            var events = @Html.Raw(Json.Serialize(ViewBag.TakvimVerileri));
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events.map(function(event) {
+                    return {
+                        id: event.id,
+                        title: event.title,
+                        start: event.start,
+                        end: event.end,
+                        color: event.color,
+                        extendedProps: {
+                            antrenorAdi: event.antrenorAdi,
+                            hizmetAdi: event.hizmetAdi,
+                            durum: event.durum
+                        }
+                    };
+                }),
+                eventClick: function(info) {
+                    // Randevu detaylarına git
+                    window.location.href = '/UyeRandevu/Details/' + info.event.id;
+                },
+                eventMouseEnter: function(info) {
+                    // Tooltip göster
+                    info.el.setAttribute('title',
+                        info.event.extendedProps.antrenorAdi + ' - ' +
+                        info.event.extendedProps.hizmetAdi + '\n' +
+                        'Durum: ' + info.event.extendedProps.durum
+                    );
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+}

@@ -1,0 +1,389 @@
+﻿@model List<YeniSalon.Controllers.TakvimRandevuViewModel>
+@{
+    ViewData["Title"] = "Randevu Takvimi";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Randevu Takvimi</h1>
+        <div>
+            <a asp-action="Create" class="btn btn-primary me-2">
+                <i class="fas fa-plus"></i> Yeni Randevu
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Liste Görünümü
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtreleme -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="antrenorId" class="form-label">Antrenör Filtresi</label>
+                    <select name="antrenorId" class="form-select" onchange="this.form.submit()">
+                        <option value="">Tüm Antrenörler</option>
+                        @foreach (var item in (List<SelectListItem>)ViewBag.Antrenorler)
+                        {
+                            <option value="@item.Value" selected="@(ViewBag.SecilenAntrenorId?.ToString() == item.Value)">
+                                @item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="tarih" class="form-label">Ay Seçin</label>
+                    <input type="month" name="tarih" class="form-control"
+                           value="@ViewBag.SecilenTarih" onchange="this.form.submit()">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <a asp-action="Calendar" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-redo"></i> Filtreyi Temizle
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Takvim -->
+    <div class="card">
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <!-- Hızlı İstatistikler -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Toplam Randevu</h6>
+                            <h3 class="mb-0">@Model.Count</h3>
+                        </div>
+                        <i class="fas fa-calendar-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Bekleyen</h6>
+                            <h3 class="mb-0">@Model.Count(r => r.Durum == YeniSalon.Models.RandevuDurumu.Beklemede)</h3>
+                        </div>
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Onaylanan</h6>
+                            <h3 class="mb-0">@Model.Count(r => r.Durum == YeniSalon.Models.RandevuDurumu.Onaylandi)</h3>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Tamamlanan</h6>
+                            <h3 class="mb-0">@Model.Count(r => r.Durum == YeniSalon.Models.RandevuDurumu.Tamamlandi)</h3>
+                        </div>
+                        <i class="fas fa-flag-checkered fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Renk Açıklamaları -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Renk Açıklamaları</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-warning p-2 mb-2" style="width: 100%;">
+                                <i class="fas fa-clock"></i> Beklemede
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-success p-2 mb-2" style="width: 100%;">
+                                <i class="fas fa-check"></i> Onaylandı
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-primary p-2 mb-2" style="width: 100%;">
+                                <i class="fas fa-check-double"></i> Tamamlandı
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-danger p-2 mb-2" style="width: 100%;">
+                                <i class="fas fa-times"></i> İptal Edildi
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-secondary p-2 mb-2" style="width: 100%;">
+                                <i class="fas fa-ban"></i> Reddedildi
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="badge bg-dark p-2 mb-2" style="width: 100%;">
+                                <i class="fas fa-user-slash"></i> Gelmeyen
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <style>
+        #calendar {
+            min-height: 600px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .fc-event {
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .fc-event:hover {
+                transform: scale(1.02);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+        .fc-daygrid-event {
+            padding: 4px 8px;
+            font-size: 0.9em;
+        }
+
+        .fc-event-title {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .fc-button {
+            background-color: #6c757d !important;
+            border-color: #6c757d !important;
+        }
+
+            .fc-button:hover {
+                background-color: #5a6268 !important;
+                border-color: #545b62 !important;
+            }
+
+        .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #007bff !important;
+            border-color: #007bff !important;
+        }
+
+        .fc-day-today {
+            background-color: rgba(0, 123, 255, 0.1) !important;
+        }
+
+        /* Custom event colors based on status */
+        .fc-event-beklemede {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .fc-event-onaylandi {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .fc-event-tamamlandi {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .fc-event-iptal-edildi {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .fc-event-reddedildi {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .fc-event-gelmeyen {
+            background-color: #6610f2;
+            border-color: #6610f2;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/tr.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            // Takvim verilerini hazırla
+            var events = @Html.Raw(Json.Serialize(Model));
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                buttonText: {
+                    today: 'Bugün',
+                    month: 'Ay',
+                    week: 'Hafta',
+                    day: 'Gün',
+                    list: 'Liste'
+                },
+                events: events.map(function(event) {
+                    // Duruma göre CSS class belirle
+                    var eventClass = '';
+                    switch (event.durum) {
+                        case 0: // Beklemede
+                            eventClass = 'fc-event-beklemede';
+                            break;
+                        case 1: // Onaylandi
+                            eventClass = 'fc-event-onaylandi';
+                            break;
+                        case 3: // Tamamlandi
+                            eventClass = 'fc-event-tamamlandi';
+                            break;
+                        case 4: // IptalEdildi
+                            eventClass = 'fc-event-iptal-edildi';
+                            break;
+                        case 2: // Reddedildi
+                            eventClass = 'fc-event-reddedildi';
+                            break;
+                        case 5: // Gelmeyen
+                            eventClass = 'fc-event-gelmeyen';
+                            break;
+                    }
+
+                    return {
+                        id: event.id,
+                        title: event.title,
+                        start: event.start,
+                        end: event.end,
+                        className: eventClass,
+                        extendedProps: {
+                            kullaniciAdi: event.kullaniciAdi,
+                            antrenorAdi: event.antrenorAdi,
+                            hizmetAdi: event.hizmetAdi,
+                            durum: getDurumText(event.durum)
+                        }
+                    };
+                }),
+                eventClick: function(info) {
+                    // Randevu detaylarına git
+                    window.location.href = '/Randevu/Details/' + info.event.id;
+                },
+                eventMouseEnter: function(info) {
+                    // Tooltip göster
+                    $(info.el).tooltip({
+                        title: createTooltipContent(info.event.extendedProps),
+                        html: true,
+                        placement: 'top',
+                        container: 'body'
+                    }).tooltip('show');
+                },
+                eventMouseLeave: function(info) {
+                    $(info.el).tooltip('dispose');
+                },
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false
+                },
+                slotLabelFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false
+                },
+                navLinks: true,
+                editable: false,
+                selectable: false,
+                selectMirror: true,
+                dayMaxEvents: true,
+                weekends: true,
+                firstDay: 1, // Pazartesi
+                businessHours: {
+                    daysOfWeek: [1, 2, 3, 4, 5, 6], // Pazartesi - Cumartesi
+                    startTime: '08:00',
+                    endTime: '20:00'
+                },
+                allDaySlot: false,
+                slotDuration: '00:30:00',
+                slotMinTime: '08:00:00',
+                slotMaxTime: '20:00:00'
+            });
+
+            calendar.render();
+
+            // Durum numarasını metne çevir
+            function getDurumText(durum) {
+                switch (durum) {
+                    case 0: return 'Beklemede';
+                    case 1: return 'Onaylandı';
+                    case 2: return 'Reddedildi';
+                    case 3: return 'Tamamlandı';
+                    case 4: return 'İptal Edildi';
+                    case 5: return 'Gelmeyen';
+                    default: return 'Bilinmeyen';
+                }
+            }
+
+            // Tooltip içeriği oluştur
+            function createTooltipContent(props) {
+                return `
+                    <div class="text-start">
+                        <strong>${props.antrenorAdi}</strong><br/>
+                        <small>${props.hizmetAdi}</small><br/>
+                        <hr class="my-1"/>
+                        <small><strong>Kullanıcı:</strong> ${props.kullaniciAdi}</small><br/>
+                        <small><strong>Durum:</strong> ${props.durum}</small><br/>
+                        <small><strong>Saat:</strong> ${info.event.start.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'})}</small>
+                    </div>
+                `;
+            }
+        });
+
+        // Aylık değişim için form submit
+        function changeMonth() {
+            document.getElementById('calendarForm').submit();
+        }
+    </script>
+}

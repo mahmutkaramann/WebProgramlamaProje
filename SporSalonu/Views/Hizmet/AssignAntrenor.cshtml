@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Antrenör Ata";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@ViewBag.HizmetAdi - Antrenör Atama</h1>
+        <a asp-action="Details" asp-route-id="@ViewBag.HizmetId" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Hizmet Detaylarına Dön
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Atanmış Antrenörler -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users"></i> Atanmış Antrenörler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.AtanmisAntrenorler != null && ((List<Antrenor>)ViewBag.AtanmisAntrenorler).Count > 0)
+                    {
+                        <div class="list-group">
+                            @foreach (var antrenor in (List<Antrenor>)ViewBag.AtanmisAntrenorler)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@antrenor.Ad @antrenor.Soyad</h6>
+                                        <small class="text-muted">@antrenor.UzmanlikAlanlari</small>
+                                    </div>
+                                    <form asp-action="RemoveAntrenor" method="post">
+                                        <input type="hidden" name="hizmetId" value="@ViewBag.HizmetId" />
+                                        <input type="hidden" name="antrenorId" value="@antrenor.AntrenorId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Bu antrenörü hizmetsiz yapmak istediğinize emin misiniz?')">
+                                            <i class="fas fa-times"></i> Kaldır
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Bu hizmete henüz antrenör atanmamış.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Yeni Antrenör Ata -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-plus"></i> Yeni Antrenör Ata
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AssignAntrenor" method="post">
+                        <input type="hidden" name="hizmetId" value="@ViewBag.HizmetId" />
+
+                        <div class="mb-3">
+                            <label for="antrenorId" class="form-label">Antrenör Seçiniz</label>
+                            <select id="antrenorId" name="antrenorId" class="form-select" required>
+                                <option value="">Antrenör Seçiniz</option>
+                                @foreach (var item in (List<SelectListItem>)ViewBag.Antrenorler)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle"></i> Antrenör Ata
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

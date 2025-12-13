@@ -1,0 +1,352 @@
+﻿@model IEnumerable<YeniSalon.Models.Randevu>
+
+@{
+    ViewData["Title"] = "Randevu Yönetimi";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Randevu Yönetimi</h1>
+        <div>
+            <a asp-action="Create" class="btn btn-primary me-2">
+                <i class="fas fa-plus"></i> Yeni Randevu
+            </a>
+            <a asp-action="Calendar" class="btn btn-info me-2">
+                <i class="fas fa-calendar"></i> Takvim Görünümü
+            </a>
+            <a asp-action="Statistics" class="btn btn-success">
+                <i class="fas fa-chart-bar"></i> İstatistikler
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- İstatistik Kartları -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@ViewBag.ToplamRandevu</h1>
+                    <p class="card-text">Toplam Randevu</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@ViewBag.BekleyenRandevu</h1>
+                    <p class="card-text">Bekleyen</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@ViewBag.OnaylananRandevu</h1>
+                    <p class="card-text">Onaylanan</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@ViewBag.TamamlananRandevu</h1>
+                    <p class="card-text">Tamamlanan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtreleme Formu -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Filtreleme Seçenekleri</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="kullaniciId" class="form-label">Üye</label>
+                    <select name="kullaniciId" class="form-select">
+                        <option value="">Tüm Üyeler</option>
+                        @foreach (var item in (List<SelectListItem>)ViewBag.Kullanicilar)
+                        {
+                            <option value="@item.Value" selected="@(ViewBag.KullaniciId == item.Value)">
+                                @item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="antrenorId" class="form-label">Antrenör</label>
+                    <select name="antrenorId" class="form-select">
+                        <option value="">Tüm Antrenörler</option>
+                        @foreach (var item in (List<SelectListItem>)ViewBag.Antrenorler)
+                        {
+                            <option value="@item.Value" selected="@(ViewBag.AntrenorId?.ToString() == item.Value)">
+                                @item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="hizmetId" class="form-label">Hizmet</label>
+                    <select name="hizmetId" class="form-select">
+                        <option value="">Tüm Hizmetler</option>
+                        @foreach (var item in (List<SelectListItem>)ViewBag.Hizmetler)
+                        {
+                            <option value="@item.Value" selected="@(ViewBag.HizmetId?.ToString() == item.Value)">
+                                @item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="durum" class="form-label">Durum</label>
+                    <select name="durum" class="form-select">
+                        <option value="">Tüm Durumlar</option>
+                        @foreach (var item in (List<SelectListItem>)ViewBag.Durumlar)
+                        {
+                            <option value="@item.Value" selected="@(ViewBag.Durum == item.Value)">
+                                @item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="baslangicTarihi" class="form-label">Başlangıç Tarihi</label>
+                    <input type="date" name="baslangicTarihi" class="form-control" value="@ViewBag.BaslangicTarihi">
+                </div>
+                <div class="col-md-3">
+                    <label for="bitisTarihi" class="form-label">Bitiş Tarihi</label>
+                    <input type="date" name="bitisTarihi" class="form-control" value="@ViewBag.BitisTarihi">
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-filter"></i> Filtrele
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Sıfırla
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Randevular Tablosu -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>
+                                <a asp-action="Index"
+                                   asp-route-sortBy="RandevuTarihi"
+                                   asp-route-sortOrder="@(ViewBag.SortBy == "RandevuTarihi" && ViewBag.SortOrder == "asc" ? "desc" : "asc")"
+                                   asp-route-kullaniciId="@ViewBag.KullaniciId"
+                                   asp-route-antrenorId="@ViewBag.AntrenorId"
+                                   asp-route-hizmetId="@ViewBag.HizmetId"
+                                   asp-route-durum="@ViewBag.Durum"
+                                   asp-route-baslangicTarihi="@ViewBag.BaslangicTarihi"
+                                   asp-route-bitisTarihi="@ViewBag.BitisTarihi">
+                                    Tarih
+                                    @if (ViewBag.SortBy == "RandevuTarihi")
+                                    {
+                                        <i class="fas fa-sort-@(ViewBag.SortOrder == "asc" ? "up" : "down")"></i>
+                                    }
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index"
+                                   asp-route-sortBy="KullaniciAdi"
+                                   asp-route-sortOrder="@(ViewBag.SortBy == "KullaniciAdi" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                                    Üye
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index"
+                                   asp-route-sortBy="AntrenorAdi"
+                                   asp-route-sortOrder="@(ViewBag.SortBy == "AntrenorAdi" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                                    Antrenör
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index"
+                                   asp-route-sortBy="HizmetAdi"
+                                   asp-route-sortOrder="@(ViewBag.SortBy == "HizmetAdi" && ViewBag.SortOrder == "asc" ? "desc" : "asc")">
+                                    Hizmet
+                                </a>
+                            </th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.RandevuTarihi.ToString("dd.MM.yyyy HH:mm")</strong><br>
+                                    <small class="text-muted">@item.BitisTarihi.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    @if (item.Kullanici != null)
+                                    {
+                                        <div>@item.Kullanici.Ad @item.Kullanici.Soyad</div>
+                                        <small class="text-muted">@item.Kullanici.Email</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Silinmiş Kullanıcı</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Antrenor != null)
+                                    {
+                                        <div>@item.Antrenor.Ad @item.Antrenor.Soyad</div>
+                                        <small class="text-muted">@item.Antrenor.UzmanlikAlanlari</small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Hizmet != null)
+                                    {
+                                        <div>@item.Hizmet.HizmetAdi</div>
+                                        <small class="text-muted">@item.Hizmet.SureDakika dk - @item.Hizmet.Ucret.ToString("C2")</small>
+                                    }
+                                </td>
+                                <td>
+                                    @switch (item.Durum)
+                                    {
+                                        case RandevuDurumu.Beklemede:
+                                            <span class="badge bg-warning">Beklemede</span>
+                                            break;
+                                        case RandevuDurumu.Onaylandi:
+                                            <span class="badge bg-success">Onaylandı</span>
+                                            break;
+                                        case RandevuDurumu.Tamamlandi:
+                                            <span class="badge bg-info">Tamamlandı</span>
+                                            break;
+                                        case RandevuDurumu.IptalEdildi:
+                                            <span class="badge bg-danger">İptal Edildi</span>
+                                            break;
+                                        case RandevuDurumu.Reddedildi:
+                                            <span class="badge bg-secondary">Reddedildi</span>
+                                            break;
+                                        case RandevuDurumu.Gelmeyen:
+                                            <span class="badge bg-dark">Gelmeyen</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.RandevuId" class="btn btn-info" title="Detay">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.RandevuId" class="btn btn-warning" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        @if (item.Durum == RandevuDurumu.Beklemede)
+                                        {
+                                            <form asp-action="Approve" method="post" style="display:inline">
+                                                <input type="hidden" name="id" value="@item.RandevuId" />
+                                                <button type="submit" class="btn btn-success" title="Onayla"
+                                                        onclick="return confirm('Bu randevuyu onaylamak istediğinize emin misiniz?')">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="Reject" method="post" style="display:inline">
+                                                <input type="hidden" name="id" value="@item.RandevuId" />
+                                                <button type="submit" class="btn btn-secondary" title="Reddet"
+                                                        onclick="return confirm('Bu randevuyu reddetmek istediğinize emin misiniz?')">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (item.Durum == RandevuDurumu.Onaylandi)
+                                        {
+                                            <form asp-action="Complete" method="post" style="display:inline">
+                                                <input type="hidden" name="id" value="@item.RandevuId" />
+                                                <button type="submit" class="btn btn-info" title="Tamamlandı"
+                                                        onclick="return confirm('Bu randevuyu tamamlandı olarak işaretlemek istediğinize emin misiniz?')">
+                                                    <i class="fas fa-check-double"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="MarkAsNoShow" method="post" style="display:inline">
+                                                <input type="hidden" name="id" value="@item.RandevuId" />
+                                                <button type="submit" class="btn btn-dark" title="Gelmeyen"
+                                                        onclick="return confirm('Bu randevuyu gelmeyen olarak işaretlemek istediğinize emin misiniz?')">
+                                                    <i class="fas fa-user-times"></i>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (item.Durum != RandevuDurumu.IptalEdildi &&
+                                                                            item.Durum != RandevuDurumu.Tamamlandi &&
+                                                                            item.Durum != RandevuDurumu.Gelmeyen)
+                                        {
+                                            <form asp-action="Cancel" method="post" style="display:inline">
+                                                <input type="hidden" name="id" value="@item.RandevuId" />
+                                                <button type="submit" class="btn btn-danger" title="İptal Et"
+                                                        onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')">
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Sayfalama -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="Index"
+                                   asp-route-page="@i"
+                                   asp-route-kullaniciId="@ViewBag.KullaniciId"
+                                   asp-route-antrenorId="@ViewBag.AntrenorId"
+                                   asp-route-hizmetId="@ViewBag.HizmetId"
+                                   asp-route-durum="@ViewBag.Durum"
+                                   asp-route-baslangicTarihi="@ViewBag.BaslangicTarihi"
+                                   asp-route-bitisTarihi="@ViewBag.BitisTarihi"
+                                   asp-route-sortBy="@ViewBag.SortBy"
+                                   asp-route-sortOrder="@ViewBag.SortOrder">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+
+            <div class="text-muted text-center mt-2">
+                Toplam @ViewBag.TotalRecords kayıt, Sayfa @ViewBag.Page/@ViewBag.TotalPages
+            </div>
+        </div>
+    </div>
+</div>

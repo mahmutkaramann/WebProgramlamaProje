@@ -1,0 +1,261 @@
+﻿@model YeniSalon.Controllers.RandevuIstatistikleriViewModel
+
+@{
+    ViewData["Title"] = "Randevu İstatistikleri";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Randevu İstatistikleri</h1>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
+
+    <!-- Genel İstatistikler -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@Model.ToplamRandevu</h1>
+                    <p class="card-text">Toplam Randevu</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@Model.BekleyenRandevu</h1>
+                    <p class="card-text">Bekleyen Randevu</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@Model.OnaylananRandevu</h1>
+                    <p class="card-text">Onaylanan Randevu</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@Model.TamamlananRandevu</h1>
+                    <p class="card-text">Tamamlanan Randevu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diğer İstatistikler -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-danger">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@Model.IptalEdilenRandevu</h1>
+                    <p class="card-text">İptal Edilen Randevu</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-secondary">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@Model.Son30GunRandevu</h1>
+                    <p class="card-text">Son 30 Gün Randevu</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-dark">
+                <div class="card-body text-center">
+                    <h1 class="display-6">@(Model.ToplamRandevu - Model.TamamlananRandevu)</h1>
+                    <p class="card-text">Devam Eden Randevu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafikler ve Detaylı İstatistikler -->
+    <div class="row">
+        <!-- Aylık Dağılım -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Son 6 Ay Randevu Dağılımı</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="aylikDagilimChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Durum Dağılımı -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Randevu Durum Dağılımı</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="durumDagilimChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Antrenör Başına Randevu Sayıları -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">En Çok Randevu Alan Antrenörler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Antrenör</th>
+                                    <th>Randevu Sayısı</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.AntrenorRandevulari.Count; i++)
+                                {
+                                    var antrenor = Model.AntrenorRandevulari[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@antrenor.AntrenorAdi</td>
+                                        <td>
+                                            <span class="badge bg-primary">@antrenor.RandevuSayisi</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hizmet Başına Randevu Sayıları -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">En Çok Tercih Edilen Hizmetler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Hizmet</th>
+                                    <th>Randevu Sayısı</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.HizmetRandevulari.Count; i++)
+                                {
+                                    var hizmet = Model.HizmetRandevulari[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@hizmet.HizmetAdi</td>
+                                        <td>
+                                            <span class="badge bg-success">@hizmet.RandevuSayisi</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Aylık Dağılım Grafiği
+            var aylikCtx = document.getElementById('aylikDagilimChart').getContext('2d');
+            var aylikLabels = @Html.Raw(Json.Serialize(Model.AylikRandevular.Select(a => a.Ay).Reverse()));
+            var aylikData = @Html.Raw(Json.Serialize(Model.AylikRandevular.Select(a => a.RandevuSayisi).Reverse()));
+
+            var aylikChart = new Chart(aylikCtx, {
+                type: 'bar',
+                data: {
+                    labels: aylikLabels,
+                    datasets: [{
+                        label: 'Randevu Sayısı',
+                        data: aylikData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Durum Dağılımı Grafiği
+            var durumCtx = document.getElementById('durumDagilimChart').getContext('2d');
+            var durumLabels = ['Bekleyen', 'Onaylanan', 'Tamamlanan', 'İptal Edilen', 'Reddedilen', 'Gelmeyen'];
+            var durumData = [
+                @Model.BekleyenRandevu,
+                @Model.OnaylananRandevu,
+                @Model.TamamlananRandevu,
+                @Model.IptalEdilenRandevu,
+                @(Model.ToplamRandevu - Model.BekleyenRandevu - Model.OnaylananRandevu - Model.TamamlananRandevu - Model.IptalEdilenRandevu),
+                0 // Gelmeyen için ayrı bir istatistik tutmuyoruz, şimdilik 0
+            ];
+
+            var durumChart = new Chart(durumCtx, {
+                type: 'pie',
+                data: {
+                    labels: durumLabels,
+                    datasets: [{
+                        data: durumData,
+                        backgroundColor: [
+                            'rgba(255, 206, 86, 0.7)',  // Bekleyen - Sarı
+                            'rgba(75, 192, 192, 0.7)', // Onaylanan - Yeşil
+                            'rgba(54, 162, 235, 0.7)', // Tamamlanan - Mavi
+                            'rgba(255, 99, 132, 0.7)', // İptal Edilen - Kırmızı
+                            'rgba(153, 102, 255, 0.7)', // Reddedilen - Mor
+                            'rgba(201, 203, 207, 0.7)'  // Gelmeyen - Gri
+                        ],
+                        borderColor: [
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(201, 203, 207, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

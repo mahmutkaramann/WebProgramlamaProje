@@ -1,0 +1,389 @@
+﻿@model YeniSalon.Models.Antrenor
+@using YeniSalon.Extensions
+@{
+    ViewData["Title"] = "Antrenör Detayları";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Antrenör Detayları</h1>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.AntrenorId" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sol Sütun: Antrenör Bilgileri -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <!-- Profil Fotoğrafı -->
+                    @if (!string.IsNullOrEmpty(Model.ProfilFotoUrl))
+                    {
+                        <img src="@Model.ProfilFotoUrl" alt="Profil Fotoğrafı"
+                             class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px;">
+                    }
+                    else
+                    {
+                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mb-3 mx-auto"
+                             style="width: 150px; height: 150px;">
+                            <i class="fas fa-user fa-4x"></i>
+                        </div>
+                    }
+
+                    <h3>@Model.Ad @Model.Soyad</h3>
+
+                    <!-- Durum -->
+                    @if (Model.AktifMi)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Pasif</span>
+                    }
+
+                    <!-- İstatistikler -->
+                    <div class="row mt-4 text-start">
+                        <div class="col-6">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body p-2 text-center">
+                                    <h5 class="mb-0">@ViewBag.ToplamRandevu</h5>
+                                    <small class="text-muted">Toplam Randevu</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body p-2 text-center">
+                                    <h5 class="mb-0">@ViewBag.AktifRandevu</h5>
+                                    <small class="text-muted">Aktif Randevu</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body p-2 text-center">
+                                    <h5 class="mb-0">@ViewBag.TamamlananRandevu</h5>
+                                    <small class="text-muted">Tamamlanan</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card bg-light mb-2">
+                                <div class="card-body p-2 text-center">
+                                    <h5 class="mb-0">@ViewBag.HaftalikRandevu</h5>
+                                    <small class="text-muted">Bu Hafta</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı İşlemler -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Hızlı İşlemler</h5>
+                </div>
+
+                <!-- Müsaitlik Saati eklemesi -->
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.AntrenorId" class="btn btn-outline-primary">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </a>
+                        <a asp-controller="MusaitlikSaati" asp-action="Index" asp-route-antrenorId="@Model.AntrenorId"
+                           class="btn btn-outline-info">
+                            <i class="fas fa-calendar-alt"></i> Müsaitlik Saatleri
+                        </a>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-id="@Model.AntrenorId"
+                                data-name="@Model.Ad @Model.Soyad">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="AssignServices" asp-route-id="@Model.AntrenorId"
+                           class="btn btn-outline-primary">
+                            <i class="fas fa-tasks"></i> Hizmet Atamaları
+                        </a>
+                        <a asp-action="Statistics" asp-route-id="@Model.AntrenorId"
+                           class="btn btn-outline-info">
+                            <i class="fas fa-chart-bar"></i> İstatistikler
+                        </a>
+                        @if (Model.AktifMi)
+                        {
+                            <form asp-action="Deactivate" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@Model.AntrenorId" />
+                                <button type="submit" class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-user-slash"></i> Pasifleştir
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="Activate" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@Model.AntrenorId" />
+                                <button type="submit" class="btn btn-outline-success w-100">
+                                    <i class="fas fa-user-check"></i> Aktifleştir
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Sütun: Detaylı Bilgiler -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Kişisel Bilgiler</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">TC Kimlik No:</dt>
+                                <dd class="col-sm-8">@Model.TCKimlikNo</dd>
+
+                                <dt class="col-sm-4">Doğum Tarihi:</dt>
+                                <dd class="col-sm-8">@Model.DogumTarihi.ToString("dd.MM.yyyy")</dd>
+
+                                <dt class="col-sm-4">Cinsiyet:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-@(Model.Cinsiyet == YeniSalon.Models.Cinsiyet.Erkek ? "primary" : "danger")">
+                                        @Model.Cinsiyet
+                                    </span>
+                                </dd>
+
+                                <dt class="col-sm-4">Adres:</dt>
+                                <dd class="col-sm-8">@Model.Adres</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Salon:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Salon != null)
+                                    {
+                                        <span class="badge bg-info">@Model.Salon.SalonAdi</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Atanmamış</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Deneyim:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-secondary">@Model.DeneyimYili yıl</span>
+                                </dd>
+
+                                <dt class="col-sm-4">Çalışma Saati:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.HaftalikCalismaSaati.HasValue)
+                                    {
+                                        <span>@Model.HaftalikCalismaSaati.Value saat/hafta</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Belirtilmemiş</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Saatlik Ücret:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.SaatlikUcret.HasValue)
+                                    {
+                                        <span class="badge bg-success">@Model.SaatlikUcret.Value.ToString("C2")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Belirtilmemiş</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Uzmanlık Alanları -->
+                    <div class="mt-3">
+                        <h6>Uzmanlık Alanları:</h6>
+                        @if (!string.IsNullOrEmpty(Model.UzmanlikAlanlari))
+                        {
+                            <div class="p-3 bg-light rounded">
+                                @Model.UzmanlikAlanlari
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Uzmanlık alanı belirtilmemiş.</p>
+                        }
+                    </div>
+
+                    <!-- Açıklama -->
+                    @if (!string.IsNullOrEmpty(Model.Aciklama))
+                    {
+                        <div class="mt-3">
+                            <h6>Açıklama:</h6>
+                            <div class="p-3 bg-light rounded">
+                                @Model.Aciklama
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Hizmetler -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Verdiği Hizmetler</h5>
+                    <a asp-action="AssignServices" asp-route-id="@Model.AntrenorId"
+                       class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i> Düzenle
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (Model.AntrenorHizmetler != null && Model.AntrenorHizmetler.Any())
+                    {
+                        <div class="row">
+                            @foreach (var hizmet in Model.AntrenorHizmetler.Select(ah => ah.Hizmet))
+                            {
+                                if (hizmet != null)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">@hizmet.HizmetAdi</h6>
+                                                <p class="card-text small text-muted">@hizmet.Aciklama.Truncate(100)</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="badge bg-primary">@hizmet.SureDakika dk</span>
+                                                    <span class="badge bg-success">@hizmet.Ucret.ToString("C2")</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Bu antrenöre henüz hizmet atanmamıştır.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Müsaitlik Saatleri -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Müsaitlik Saatleri</h5>
+                    <a asp-controller="MusaitlikSaati" asp-action="Create" asp-route-antrenorId="@Model.AntrenorId"
+                       class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Yeni Ekle
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (Model.MusaitlikSaatleri != null && Model.MusaitlikSaatleri.Any(ms => ms.AktifMi))
+                    {
+                        <div class="row">
+                            @{
+                                var gunler = Model.MusaitlikSaatleri
+                                .Where(ms => ms.AktifMi)
+                                .GroupBy(ms => ms.Gun)
+                                .OrderBy(g => g.Key)
+                                .ToList();
+                            }
+
+                            @foreach (var gunGrubu in gunler)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">@GetDayName(gunGrubu.Key)</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            @foreach (var saat in gunGrubu.OrderBy(s => s.BaslangicSaati))
+                                            {
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div>
+                                                        <i class="fas fa-clock text-success me-2"></i>
+                                                        <strong>@saat.BaslangicSaati.ToString(@"hh\:mm")</strong> -
+                                                        <strong>@saat.BitisSaati.ToString(@"hh\:mm")</strong>
+                                                    </div>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a asp-controller="MusaitlikSaati" asp-action="Edit"
+                                                           asp-route-id="@saat.MusaitlikId" class="btn btn-sm btn-warning">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a asp-controller="MusaitlikSaati" asp-action="Delete"
+                                                           asp-route-id="@saat.MusaitlikId" class="btn btn-sm btn-danger">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                            <h4>Müsaitlik Saati Tanımlanmamış</h4>
+                            <p class="mb-4">Bu antrenör için henüz müsaitlik saati tanımlanmamıştır.</p>
+                            <a asp-controller="MusaitlikSaati" asp-action="Create" asp-route-antrenorId="@Model.AntrenorId"
+                               class="btn btn-primary">
+                                <i class="fas fa-plus"></i> İlk Müsaitlik Saatini Ekle
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetDayName(DayOfWeek day)
+    {
+        return day switch
+        {
+            DayOfWeek.Monday => "Pazartesi",
+            DayOfWeek.Tuesday => "Salı",
+            DayOfWeek.Wednesday => "Çarşamba",
+            DayOfWeek.Thursday => "Perşembe",
+            DayOfWeek.Friday => "Cuma",
+            DayOfWeek.Saturday => "Cumartesi",
+            DayOfWeek.Sunday => "Pazar",
+            _ => day.ToString()
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // String truncate extension
+        String.prototype.Truncate = function(maxLength) {
+            if (this.length <= maxLength) return this;
+            return this.substring(0, maxLength) + '...';
+        };
+    </script>
+}

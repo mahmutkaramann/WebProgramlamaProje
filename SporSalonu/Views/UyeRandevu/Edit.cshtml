@@ -1,0 +1,145 @@
+﻿@model YeniSalon.Models.Randevu
+
+@{
+    ViewData["Title"] = "Randevu Düzenle";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Randevu Düzenle</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <input type="hidden" asp-for="RandevuId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- Antrenör Seçimi -->
+                        <div class="mb-3">
+                            <label asp-for="AntrenorId" class="form-label"></label>
+                            <select asp-for="AntrenorId" class="form-select" id="antrenorSelect" required>
+                                <option value="">Antrenör Seçiniz</option>
+                                @foreach (var item in (List<SelectListItem>)ViewBag.Antrenorler)
+                                {
+                                    <option value="@item.Value" selected="@(item.Selected)">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AntrenorId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Hizmet Seçimi -->
+                        <div class="mb-3">
+                            <label asp-for="HizmetId" class="form-label"></label>
+                            <select asp-for="HizmetId" class="form-select" id="hizmetSelect" required>
+                                <option value="">Hizmet Seçiniz</option>
+                                @foreach (var item in (List<SelectListItem>)ViewBag.Hizmetler)
+                                {
+                                    <option value="@item.Value" selected="@(item.Selected)" data-sure="@item.Text.Split('-').Last().Trim().Split(' ')[0]">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="HizmetId" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <!-- Randevu Tarihi -->
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="RandevuTarihi" class="form-label"></label>
+                                @{
+                                    var randevuTarihiValue = Model.RandevuTarihi.ToString("yyyy-MM-ddTHH:mm");
+                                }
+                                <input asp-for="RandevuTarihi" type="datetime-local" class="form-control"
+                                       value="@randevuTarihiValue" id="randevuTarihi" required />
+                                <span asp-validation-for="RandevuTarihi" class="text-danger"></span>
+                            </div>
+
+                            <!-- Müsaitlik Kontrolü -->
+                            <div class="col-md-4 mb-3 d-flex align-items-end">
+                                <button type="button" id="musaitlikKontrol" class="btn btn-info w-100">
+                                    <i class="fas fa-search"></i> Kontrol Et
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Müsaitlik Sonucu -->
+                        <div id="musaitlikSonucu" class="alert d-none mb-3"></div>
+
+                        <!-- Not -->
+                        <div class="mb-3">
+                            <label asp-for="Not" class="form-label"></label>
+                            <textarea asp-for="Not" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Not" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Güncelle
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.RandevuId" class="btn btn-info">
+                                <i class="fas fa-eye"></i> Detay
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Müsaitlik kontrolü
+            $('#musaitlikKontrol').click(function() {
+                var antrenorId = $('#antrenorSelect').val();
+                var randevuTarihi = $('#randevuTarihi').val();
+                var hizmetSelect = $('#hizmetSelect');
+                var hizmetId = hizmetSelect.val();
+
+                if (!antrenorId || !randevuTarihi || !hizmetId) {
+                    alert('Lütfen antrenör, hizmet ve randevu tarihi seçiniz.');
+                    return;
+                }
+
+                // Hizmet süresini al
+                var selectedOption = hizmetSelect.find('option:selected');
+                var sureText = selectedOption.data('sure');
+                var sureDakika = sureText ? parseInt(sureText) : 60;
+
+                // API'yi çağır
+                $.get('/UyeRandevu/CheckAvailability', {
+                    antrenorId: antrenorId,
+                    randevuTarihi: randevuTarihi,
+                    sureDakika: sureDakika
+                }, function(response) {
+                    var sonucDiv = $('#musaitlikSonucu');
+                    sonucDiv.removeClass('d-none alert-success alert-danger');
+
+                    if (response.Musait) {
+                        sonucDiv.addClass('alert-success');
+                        sonucDiv.html('<i class="fas fa-check-circle"></i> Seçtiğiniz tarihte antrenör müsait. Randevu güncelleyebilirsiniz.');
+                    } else {
+                        sonucDiv.addClass('alert-danger');
+                        var html = '<i class="fas fa-exclamation-circle"></i> Seçtiğiniz tarihte antrenör müsait değil. Çakışan randevular:<ul>';
+
+                        $.each(response.CakisanRandevular, function(index, randevu) {
+                            html += '<li>' + randevu.Hizmet + ' (' +
+                                   randevu.Baslangic + ' - ' + randevu.Bitis + ')</li>';
+                        });
+
+                        html += '</ul>';
+                        sonucDiv.html(html);
+                    }
+                });
+            });
+        });
+    </script>
+}

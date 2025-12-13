@@ -1,0 +1,251 @@
+﻿@model IEnumerable<YeniSalon.Models.MusaitlikSaati>
+@{
+    ViewData["Title"] = "Müsaitlik Saatleri";
+    var antrenor = ViewBag.Antrenor as YeniSalon.Models.Antrenor;
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Müsaitlik Saatleri</h1>
+        <div>
+            <a asp-action="Create" asp-route-antrenorId="@antrenor.AntrenorId" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yeni Müsaitlik Saati
+            </a>
+            <a asp-controller="Antrenor" asp-action="Details" asp-route-id="@antrenor.AntrenorId"
+               class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Antrenör Detayları
+            </a>
+        </div>
+    </div>
+
+    <!-- Antrenör Bilgileri -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>@antrenor.Ad @antrenor.Soyad</h5>
+                    <p class="mb-1"><strong>Uzmanlık:</strong> @antrenor.UzmanlikAlanlari</p>
+                    <p class="mb-0"><strong>Deneyim:</strong> @antrenor.DeneyimYili yıl</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    @if (!string.IsNullOrEmpty(antrenor.ProfilFotoUrl))
+                    {
+                        <img src="@antrenor.ProfilFotoUrl" alt="Profil Fotoğrafı" class="img-thumbnail" style="width: 100px; height: 100px;">
+                    }
+                    else
+                    {
+                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center d-inline-block"
+                             style="width: 100px; height: 100px;">
+                            <i class="fas fa-user fa-3x"></i>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Müsaitlik Saatleri Listesi -->
+    @if (!Model.Any())
+    {
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                <h4>Müsaitlik Saati Tanımlanmamış</h4>
+                <p class="text-muted mb-4">Bu antrenör için henüz müsaitlik saati tanımlanmamıştır.</p>
+                <a asp-action="Create" asp-route-antrenorId="@antrenor.AntrenorId" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> İlk Müsaitlik Saatini Ekle
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Gün</th>
+                                <th>Başlangıç Saati</th>
+                                <th>Bitiş Saati</th>
+                                <th>Durum</th>
+                                <th class="text-end">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            @GetGunAdi(item.Gun)
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">@item.BaslangicSaati.ToString(@"hh\:mm")</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">@item.BitisSaati.ToString(@"hh\:mm")</span>
+                                    </td>
+                                    <td>
+                                        @if (item.AktifMi)
+                                        {
+                                            <span class="badge bg-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Pasif</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.MusaitlikId"
+                                               class="btn btn-sm btn-warning" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                    title="Sil" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-id="@item.MusaitlikId"
+                                                    data-gun="@GetGunAdi(item.Gun)"
+                                                    data-baslangic="@item.BaslangicSaati.ToString(@"hh\:mm")"
+                                                    data-bitis="@item.BitisSaati.ToString(@"hh\:mm")">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Haftalık Müsaitlik Tablosu -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Haftalık Müsaitlik Tablosu</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @{
+                        var gunler = new[] { "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" };
+                    }
+                    @foreach (var gun in gunler)
+                    {
+                        var gunSaatleri = Model.Where(m => GetGunAdi(m.Gun) == gun && m.AktifMi).OrderBy(m => m.BaslangicSaati).ToList();
+
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">@gun</h6>
+                                </div>
+                                <div class="card-body">
+                                    @if (gunSaatleri.Any())
+                                    {
+                                        <div class="list-group">
+                                            @foreach (var saat in gunSaatleri)
+                                            {
+                                                <div class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="fas fa-clock text-success me-2"></i>
+                                                            <strong>@saat.BaslangicSaati.ToString(@"hh\:mm")</strong> -
+                                                            <strong>@saat.BitisSaati.ToString(@"hh\:mm")</strong>
+                                                        </div>
+                                                        <span class="badge bg-success">Müsait</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-light text-center mb-0">
+                                            <i class="fas fa-times-circle text-muted"></i>
+                                            <p class="mb-0">Müsaitlik saati yok</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Silme Modalı -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Müsaitlik Saati Sil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong><span id="musaitlikGun"></span> <span id="musaitlikSaat"></span></strong>
+                    müsaitlik saatini silmek istediğinize emin misiniz?
+                </p>
+                <p class="text-danger">
+                    <small>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Bu saat dilimine ait aktif randevular varsa silinemez.
+                    </small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetGunAdi(DayOfWeek gun)
+    {
+        return gun switch
+        {
+            DayOfWeek.Monday => "Pazartesi",
+            DayOfWeek.Tuesday => "Salı",
+            DayOfWeek.Wednesday => "Çarşamba",
+            DayOfWeek.Thursday => "Perşembe",
+            DayOfWeek.Friday => "Cuma",
+            DayOfWeek.Saturday => "Cumartesi",
+            DayOfWeek.Sunday => "Pazar",
+            _ => gun.ToString()
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // Silme modalını ayarla
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteModal = document.getElementById('deleteModal');
+            deleteModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                var musaitlikId = button.getAttribute('data-id');
+                var gun = button.getAttribute('data-gun');
+                var baslangic = button.getAttribute('data-baslangic');
+                var bitis = button.getAttribute('data-bitis');
+
+                var musaitlikGun = deleteModal.querySelector('#musaitlikGun');
+                var musaitlikSaat = deleteModal.querySelector('#musaitlikSaat');
+                var deleteForm = deleteModal.querySelector('#deleteForm');
+
+                musaitlikGun.textContent = gun;
+                musaitlikSaat.textContent = baslangic + ' - ' + bitis;
+                deleteForm.action = '/MusaitlikSaati/Delete/' + musaitlikId;
+            });
+        });
+    </script>
+}

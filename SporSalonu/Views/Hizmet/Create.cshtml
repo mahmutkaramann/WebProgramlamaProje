@@ -1,0 +1,93 @@
+﻿@model YeniSalon.Models.Hizmet
+
+@{
+    ViewData["Title"] = "Yeni Hizmet Ekle";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Yeni Hizmet Ekle</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="HizmetAdi" class="form-label"></label>
+                                <input asp-for="HizmetAdi" class="form-control" />
+                                <span asp-validation-for="HizmetAdi" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Kategori" class="form-label"></label>
+                                <input asp-for="Kategori" class="form-control" list="kategoriList" />
+                                <datalist id="kategoriList">
+                                    @foreach (var kategori in ViewBag.KategoriListesi)
+                                    {
+                                        <option value="@kategori">@kategori</option>
+                                    }
+                                </datalist>
+                                <span asp-validation-for="Kategori" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Aciklama" class="form-label"></label>
+                            <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Aciklama" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SureDakika" class="form-label"></label>
+                                <input asp-for="SureDakika" class="form-control" type="number" min="15" max="240" />
+                                <span asp-validation-for="SureDakika" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Ucret" class="form-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="Ucret" class="form-control" />
+                                    <span class="input-group-text">₺</span>
+                                </div>
+                                <span asp-validation-for="Ucret" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SalonId" class="form-label"></label>
+                            <select asp-for="SalonId" class="form-select" asp-items="ViewBag.Salonlar">
+                                <option value="">Salon Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="SalonId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="AktifMi" class="form-check-input" checked />
+                            <label asp-for="AktifMi" class="form-check-label"></label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

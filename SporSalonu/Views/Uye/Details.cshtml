@@ -1,0 +1,196 @@
+﻿@model YeniSalon.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Üye Detayları";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Üye Detayları</h1>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sol Taraf: Üye Bilgileri -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Temel Bilgiler</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Ad Soyad:</dt>
+                        <dd class="col-sm-8">@Model.Ad @Model.Soyad</dd>
+
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4">TC Kimlik No:</dt>
+                        <dd class="col-sm-8">@Model.TCKimlikNo</dd>
+
+                        <dt class="col-sm-4">Doğum Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.DogumTarihi.ToString("dd.MM.yyyy")</dd>
+
+                        <dt class="col-sm-4">Yaş:</dt>
+                        <dd class="col-sm-8">@(DateTime.Now.Year - Model.DogumTarihi.Year)</dd>
+
+                        <dt class="col-sm-4">Cinsiyet:</dt>
+                        <dd class="col-sm-8">@Model.Cinsiyet</dd>
+
+                        <dt class="col-sm-4">Rol:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-primary">@ViewBag.Rol</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">İletişim Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Adres:</dt>
+                        <dd class="col-sm-8">@Model.Adres</dd>
+
+                        <dt class="col-sm-4">Telefon:</dt>
+                        <dd class="col-sm-8">@(Model.PhoneNumber ?? "Belirtilmemiş")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: Diğer Bilgiler -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Fiziksel Özellikler</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Boy:</dt>
+                        <dd class="col-sm-8">@(Model.Boy.HasValue ? $"{Model.Boy} cm" : "Belirtilmemiş")</dd>
+
+                        <dt class="col-sm-4">Kilo:</dt>
+                        <dd class="col-sm-8">@(Model.Kilo.HasValue ? $"{Model.Kilo} kg" : "Belirtilmemiş")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Üyelik Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Üyelik Türü:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.UyelikTuru.HasValue)
+                            {
+                                <span class="badge bg-info">@Model.UyelikTuru</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Belirtilmemiş</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Üyelik Başlangıç:</dt>
+                        <dd class="col-sm-8">@(Model.UyelikBaslangic?.ToString("dd.MM.yyyy") ?? "Belirtilmemiş")</dd>
+
+                        <dt class="col-sm-4">Üyelik Bitiş:</dt>
+                        <dd class="col-sm-8">@(Model.UyelikBitis?.ToString("dd.MM.yyyy") ?? "Belirtilmemiş")</dd>
+
+                        <dt class="col-sm-4">Durum:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.AktifMi)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Randevular -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Son Randevular</h5>
+                    <a asp-controller="Randevu" asp-action="Index" asp-route-kullaniciId="@Model.Id"
+                       class="btn btn-sm btn-primary">
+                        Tümünü Gör <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Randevular != null && ((List<Randevu>)ViewBag.Randevular).Count > 0)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Tarih</th>
+                                        <th>Antrenör</th>
+                                        <th>Hizmet</th>
+                                        <th>Durum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var randevu in (List<Randevu>)ViewBag.Randevular)
+                                    {
+                                        <tr>
+                                            <td>@randevu.RandevuTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                            <td>@randevu.Antrenor?.Ad @randevu.Antrenor?.Soyad</td>
+                                            <td>@randevu.Hizmet?.HizmetAdi</td>
+                                            <td>
+                                                @switch (randevu.Durum)
+                                                {
+                                                    case RandevuDurumu.Beklemede:
+                                                        <span class="badge bg-warning">Beklemede</span>
+                                                        break;
+                                                    case RandevuDurumu.Onaylandi:
+                                                        <span class="badge bg-success">Onaylandı</span>
+                                                        break;
+                                                    case RandevuDurumu.Tamamlandi:
+                                                        <span class="badge bg-info">Tamamlandı</span>
+                                                        break;
+                                                    case RandevuDurumu.IptalEdildi:
+                                                        <span class="badge bg-danger">İptal Edildi</span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-secondary">@randevu.Durum</span>
+                                                        break;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Bu üyenin henüz randevusu bulunmamaktadır.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

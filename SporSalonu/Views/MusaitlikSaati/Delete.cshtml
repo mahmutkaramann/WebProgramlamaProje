@@ -1,0 +1,104 @@
+﻿@model YeniSalon.Models.MusaitlikSaati
+@{
+    ViewData["Title"] = "Müsaitlik Saati Sil";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="text-center mb-0">Müsaitlik Saati Sil</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-circle"></i> Silme Onayı</h5>
+                        <p class="mb-0">
+                            Aşağıdaki müsaitlik saatini silmek istediğinize emin misiniz?
+                        </p>
+                    </div>
+
+                    <!-- Müsaitlik Saati Bilgileri -->
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h4>@GetGunAdi(Model.Gun)</h4>
+                            <p class="display-6 mb-0">
+                                @Model.BaslangicSaati.ToString(@"hh\:mm") - @Model.BitisSaati.ToString(@"hh\:mm")
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Antrenör Bilgileri -->
+                    @if (Model.Antrenor != null)
+                    {
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h6>Antrenör Bilgileri:</h6>
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(Model.Antrenor.ProfilFotoUrl))
+                                    {
+                                        <img src="@Model.Antrenor.ProfilFotoUrl" alt="Profil"
+                                             class="rounded-circle me-3" style="width: 60px; height: 60px;">
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3"
+                                             style="width: 60px; height: 60px;">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    }
+                                    <div>
+                                        <strong>@Model.Antrenor.Ad @Model.Antrenor.Soyad</strong><br>
+                                        <small class="text-muted">@Model.Antrenor.UzmanlikAlanlari</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Uyarılar -->
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Dikkat!</h6>
+                        <ul class="mb-0">
+                            <li>Bu saat dilimine ait aktif randevular varsa silinemez</li>
+                            <li>Silme işlemi geri alınamaz</li>
+                            <li>Müsaitlik saati pasif hale getirilecektir (soft delete)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Silme Formu -->
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="MusaitlikId" />
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-trash"></i> Evet, Sil
+                            </button>
+                            <a asp-action="Index" asp-route-antrenorId="@Model.AntrenorId"
+                               class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hayır, İptal Et
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetGunAdi(DayOfWeek gun)
+    {
+        return gun switch
+        {
+            DayOfWeek.Monday => "Pazartesi",
+            DayOfWeek.Tuesday => "Salı",
+            DayOfWeek.Wednesday => "Çarşamba",
+            DayOfWeek.Thursday => "Perşembe",
+            DayOfWeek.Friday => "Cuma",
+            DayOfWeek.Saturday => "Cumartesi",
+            DayOfWeek.Sunday => "Pazar",
+            _ => gun.ToString()
+        };
+    }
+}

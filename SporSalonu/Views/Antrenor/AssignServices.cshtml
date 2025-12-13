@@ -1,0 +1,158 @@
+﻿@using YeniSalon.Extensions
+@{
+    ViewData["Title"] = "Hizmet Atamaları";
+    var antrenor = ViewBag.Antrenor as YeniSalon.Models.Antrenor;
+    var hizmetler = ViewBag.Hizmetler as List<SelectListItem>;
+    var atanmisHizmetler = ViewBag.AtanmisHizmetler as List<YeniSalon.Models.Hizmet>;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Antrenör Hizmet Atamaları</h3>
+                        <a asp-action="Details" asp-route-id="@antrenor.AntrenorId" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Antrenör Detayları
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Antrenör Bilgileri -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>@antrenor.Ad @antrenor.Soyad</h5>
+                                <p class="mb-1"><strong>Uzmanlık:</strong> @antrenor.UzmanlikAlanlari</p>
+                                <p class="mb-0"><strong>Deneyim:</strong> @antrenor.DeneyimYili yıl</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                @if (!string.IsNullOrEmpty(antrenor.ProfilFotoUrl))
+                                {
+                                    <img src="@antrenor.ProfilFotoUrl" alt="Profil Fotoğrafı"
+                                         class="img-thumbnail" style="width: 100px; height: 100px;">
+                                }
+                                else
+                                {
+                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center d-inline-block"
+                                         style="width: 100px; height: 100px;">
+                                        <i class="fas fa-user fa-3x"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hizmet Atama Formu -->
+                    <form asp-action="AssignServices" method="post">
+                        <input type="hidden" name="antrenorId" value="@antrenor.AntrenorId" />
+
+                        <div class="mb-4">
+                            <h5 class="mb-3">Hizmet Seçimi</h5>
+                            <p class="text-muted mb-3">
+                                Antrenörün verebileceği hizmetleri seçin. Birden fazla hizmet seçebilirsiniz.
+                            </p>
+
+                            @if (hizmetler != null && hizmetler.Any())
+                            {
+                                <div class="row">
+                                    @foreach (var hizmet in hizmetler)
+                                    {
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name="hizmetIds" value="@hizmet.Value"
+                                                       id="hizmet_@hizmet.Value" @(hizmet.Selected ? "checked" : "")>
+                                                <label class="form-check-label w-100" for="hizmet_@hizmet.Value">
+                                                    <div class="card @(hizmet.Selected ? "border-primary" : "")">
+                                                        <div class="card-body">
+                                                            <h6 class="card-title mb-2">@hizmet.Text.Split('-')[0]</h6>
+                                                            <div class="d-flex justify-content-between">
+                                                                <small class="text-muted">@hizmet.Text.Split('-')[1]</small>
+                                                                <small class="text-muted">@hizmet.Text.Split('-')[2]</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Sistemde kayıtlı hizmet bulunmamaktadır.
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Atanmış Hizmetler -->
+                        @if (atanmisHizmetler != null && atanmisHizmetler.Any())
+                        {
+                            <div class="mb-4">
+                                <h5 class="mb-3">Şu Anda Atanmış Hizmetler</h5>
+                                <div class="row">
+                                    @foreach (var hizmet in atanmisHizmetler)
+                                    {
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-success">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">@hizmet.HizmetAdi</h6>
+                                                    <p class="card-text small text-muted">@hizmet.Aciklama.Truncate(100)</p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="badge bg-primary">@hizmet.SureDakika dk</span>
+                                                        <span class="badge bg-success">@hizmet.Ucret.ToString("C2")</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Butonlar -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Atamaları Kaydet
+                            </button>
+                            <a asp-action="Details" asp-route-id="@antrenor.AntrenorId" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // String truncate extension
+        String.prototype.Truncate = function(maxLength) {
+            if (this.length <= maxLength) return this;
+            return this.substring(0, maxLength) + '...';
+        };
+
+        // Checkbox seçildiğinde kartı vurgula
+        $(document).ready(function() {
+            $('input[name="hizmetIds"]').change(function() {
+                var card = $(this).closest('.card');
+                if ($(this).is(':checked')) {
+                    card.addClass('border-primary').removeClass('border-secondary');
+                } else {
+                    card.removeClass('border-primary').addClass('border-secondary');
+                }
+            });
+
+            // İlk yüklemede kartları vurgula
+            $('input[name="hizmetIds"]:checked').each(function() {
+                $(this).closest('.card').addClass('border-primary').removeClass('border-secondary');
+            });
+        });
+    </script>
+}

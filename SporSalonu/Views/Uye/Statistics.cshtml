@@ -1,0 +1,176 @@
+﻿@model YeniSalon.Controllers.UyeIstatistikleriViewModel
+
+@{
+    ViewData["Title"] = "Üye İstatistikleri";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Üye İstatistikleri</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Listeye Dön
+        </a>
+    </div>
+
+    <!-- Genel İstatistikler -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@Model.ToplamUye</h1>
+                    <p class="card-text">Toplam Üye</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@Model.AktifUye</h1>
+                    <p class="card-text">Aktif Üye</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-danger">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@Model.PasifUye</h1>
+                    <p class="card-text">Pasif Üye</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@Model.ErkekUye</h1>
+                    <p class="card-text">Erkek Üye</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@Model.KadinUye</h1>
+                    <p class="card-text">Kadın Üye</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-secondary">
+                <div class="card-body text-center">
+                    <h1 class="display-4">@Model.YeniUyeler</h1>
+                    <p class="card-text">Son 30 Gün</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafikler -->
+    <div class="row">
+        <!-- Üyelik Türü Dağılımı -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Üyelik Türü Dağılımı</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.UyelikTuruDagilimi.Any())
+                    {
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Üyelik Türü</th>
+                                    <th>Üye Sayısı</th>
+                                    <th>Yüzde</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dagilim in Model.UyelikTuruDagilimi)
+                                {
+                                    double yuzde = Model.ToplamUye > 0 ?
+                                    Math.Round((double)dagilim.Sayi / Model.ToplamUye * 100, 1) : 0;
+
+                                    <tr>
+                                        <td>@dagilim.UyelikTuru</td>
+                                        <td>@dagilim.Sayi</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar"
+                                                     style="width: @yuzde%"
+                                                     aria-valuenow="@yuzde"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100">
+                                                    @yuzde%
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Üyelik türü dağılımı bulunmamaktadır.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Aylık Üye Artışı -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Son 6 Aylık Üye Artışı</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.AylikUyeArtisi.Any())
+                    {
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Ay</th>
+                                    <th>Üye Sayısı</th>
+                                    <th>İlerleme</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int maxUye = Model.AylikUyeArtisi.Max(a => a.UyeSayisi);
+                                }
+                                @foreach (var ay in Model.AylikUyeArtisi)
+                                {
+                                    double yuzde = maxUye > 0 ?
+                                    Math.Round((double)ay.UyeSayisi / maxUye * 100, 1) : 0;
+
+                                    <tr>
+                                        <td>@ay.Ay</td>
+                                        <td>@ay.UyeSayisi</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                     style="width: @yuzde%"
+                                                     aria-valuenow="@yuzde"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100">
+                                                    @ay.UyeSayisi
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Aylık üye artışı verisi bulunmamaktadır.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
