@@ -202,22 +202,64 @@ namespace YeniSalon.Controllers
         }
 
         // POST: UyeRandevu/Create - İlk Adım: Antrenör ve Hizmet Seçimi
+        // POST: UyeRandevu/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateRandevuViewModel model)
+        public async Task<IActionResult> Create(Randevu randevu)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Kullanıcı ID'sini ayarla
+            randevu.KullaniciId = user.Id;
+            randevu.Durum = RandevuDurumu.Beklemede;
+            randevu.OlusturulmaTarihi = DateTime.Now;
+
             if (ModelState.IsValid)
             {
-                // İkinci adıma yönlendir: Tarih Seçimi
-                return RedirectToAction("SelectDate", new
+                try
                 {
-                    antrenorId = model.AntrenorId,
-                    hizmetId = model.HizmetId
-                });
+                    // Hizmet süresini hesapla ve bitiş tarihini ayarla
+                    var hizmet = await _context.Hizmetler.FindAsync(randevu.HizmetId);
+                    if (hizmet != null)
+                    {
+                        randevu.BitisTarihi = randevu.RandevuTarihi.AddMinutes(hizmet.SureDakika);
+                    }
+                    else
+                    {
+                        // Varsayılan 60 dakika
+                        randevu.BitisTarihi = randevu.RandevuTarihi.AddMinutes(60);
+                    }
+
+                    // Çakışma kontrolü
+                    var isAvailable = await IsTimeSlotAvailable(randevu.AntrenorId, randevu.RandevuTarihi, randevu.BitisTarihi);
+
+                    if (!isAvailable)
+                    {
+                        TempData["ErrorMessage"] = "Seçtiğiniz saat artık müsait değil. Lütfen başka bir saat seçin.";
+                        await PopulateCreateViewBags();
+                        return View(randevu);
+                    }
+
+                    _context.Add(randevu);
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Randevu talebiniz başarıyla oluşturuldu. Antrenör onayı bekleniyor.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Randevu oluşturulurken bir hata oluştu: {ex.Message}";
+                    await PopulateCreateViewBags();
+                    return View(randevu);
+                }
             }
 
             await PopulateCreateViewBags();
-            return View(model);
+            return View(randevu);
         }
 
         // GET: UyeRandevu/SelectDate - İkinci Adım: Tarih ve Saat Seçimi
@@ -320,43 +362,63 @@ namespace YeniSalon.Controllers
 
             if (ModelState.IsValid)
             {
-                // Çakışma kontrolü
-                var isAvailable = await IsTimeSlotAvailable(model.AntrenorId, model.RandevuTarihi,
-                    model.RandevuTarihi.AddMinutes(model.DurationMinutes));
-
-                if (!isAvailable)
+                try
                 {
-                    TempData["ErrorMessage"] = "Seçtiğiniz saat artık müsait değil. Lütfen başka bir saat seçin.";
+                    // 1. Müsaitlik kontrolü
+                    var isAvailable = await IsTimeSlotAvailable(model.AntrenorId, model.RandevuTarihi,
+                        model.RandevuTarihi.AddMinutes(model.DurationMinutes));
+
+                    if (!isAvailable)
+                    {
+                        TempData["ErrorMessage"] = "Seçtiğiniz saat artık müsait değil. Lütfen başka bir saat seçin.";
+                        return RedirectToAction("SelectDate", new
+                        {
+                            antrenorId = model.AntrenorId,
+                            hizmetId = model.HizmetId
+                        });
+                    }
+
+                    // 2. Bitiş tarihini doğru hesapla
+                    var hizmet = await _context.Hizmetler.FindAsync(model.HizmetId);
+                    if (hizmet == null)
+                    {
+                        TempData["ErrorMessage"] = "Seçilen hizmet bulunamadı.";
+                        return RedirectToAction("SelectDate", new
+                        {
+                            antrenorId = model.AntrenorId,
+                            hizmetId = model.HizmetId
+                        });
+                    }
+
+                    var bitisTarihi = model.RandevuTarihi.AddMinutes(hizmet.SureDakika);
+
+                    var randevu = new Randevu
+                    {
+                        KullaniciId = user.Id,
+                        AntrenorId = model.AntrenorId,
+                        HizmetId = model.HizmetId,
+                        RandevuTarihi = model.RandevuTarihi,
+                        BitisTarihi = bitisTarihi, // Bitiş tarihini ekle
+                        Durum = RandevuDurumu.Beklemede,
+                        OlusturulmaTarihi = DateTime.Now,
+                        Not = model.Not
+                    };
+
+                    _context.Add(randevu);
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Randevu talebiniz başarıyla oluşturuldu. Antrenör onayı bekleniyor.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Randevu oluşturulurken bir hata oluştu: {ex.Message}";
                     return RedirectToAction("SelectDate", new
                     {
                         antrenorId = model.AntrenorId,
                         hizmetId = model.HizmetId
                     });
                 }
-
-                var randevu = new Randevu
-                {
-                    KullaniciId = user.Id,
-                    AntrenorId = model.AntrenorId,
-                    HizmetId = model.HizmetId,
-                    RandevuTarihi = model.RandevuTarihi,
-                    Durum = RandevuDurumu.Beklemede,
-                    OlusturulmaTarihi = DateTime.Now,
-                    Not = model.Not
-                };
-
-                // Hizmet süresini hesapla ve bitiş tarihini ayarla
-                var hizmet = await _context.Hizmetler.FindAsync(model.HizmetId);
-                if (hizmet != null)
-                {
-                    randevu.BitisTarihi = randevu.RandevuTarihi.AddMinutes(hizmet.SureDakika);
-                }
-
-                _context.Add(randevu);
-                await _context.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = "Randevu talebiniz başarıyla oluşturuldu. Antrenör onayı bekleniyor.";
-                return RedirectToAction(nameof(Index));
             }
 
             TempData["ErrorMessage"] = "Randevu oluşturulurken bir hata oluştu.";
@@ -509,38 +571,181 @@ namespace YeniSalon.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: UyeRandevu/CheckAvailability - Müsaitlik kontrolü
+
+        // Müsaitlik Saati Kontrolü
+        // UyeRandevuController.cs içinde
+
+        // GET: UyeRandevu/CheckAvailability
         public async Task<IActionResult> CheckAvailability(int antrenorId, DateTime randevuTarihi, int sureDakika)
         {
-            var baslangic = randevuTarihi;
-            var bitis = randevuTarihi.AddMinutes(sureDakika);
-
-            var musaitRandevular = await _context.Randevular
-                .Where(r => r.AntrenorId == antrenorId &&
-                           r.Durum != RandevuDurumu.IptalEdildi &&
-                           r.Durum != RandevuDurumu.Reddedildi &&
-                           r.Durum != RandevuDurumu.Gelmeyen &&
-                           ((baslangic >= r.RandevuTarihi && baslangic < r.BitisTarihi) ||
-                            (bitis > r.RandevuTarihi && bitis <= r.BitisTarihi) ||
-                            (baslangic <= r.RandevuTarihi && bitis >= r.BitisTarihi)))
-                .Include(r => r.Hizmet)
-                .ToListAsync();
-
-            var antrenor = await _context.Antrenorler.FindAsync(antrenorId);
-
-            return Json(new
+            try
             {
-                Musait = !musaitRandevular.Any(),
-                CakisanRandevular = musaitRandevular.Select(r => new
+                Console.WriteLine($"CheckAvailability çağrıldı: AntrenorId={antrenorId}, Tarih={randevuTarihi}, Süre={sureDakika}");
+
+                var baslangic = randevuTarihi;
+                var bitis = randevuTarihi.AddMinutes(sureDakika);
+
+                Console.WriteLine($"Başlangıç: {baslangic}, Bitiş: {bitis}");
+
+                // 1. ÖNCE MÜSAİTLİK SAATLERİNİ KONTROL ET
+                var gun = randevuTarihi.DayOfWeek;
+                var saat = randevuTarihi.TimeOfDay;
+
+                Console.WriteLine($"Gün: {gun}, Saat: {saat}");
+
+                var musaitlikVarMi = await _context.MusaitlikSaatleri
+                    .AnyAsync(m => m.AntrenorId == antrenorId &&
+                                  m.Gun == gun &&
+                                  m.AktifMi &&
+                                  m.BaslangicSaati <= saat &&
+                                  m.BitisSaati >= bitis.TimeOfDay);
+
+                Console.WriteLine($"Müsaitlik var mı: {musaitlikVarMi}");
+
+                if (!musaitlikVarMi)
                 {
-                    Hizmet = r.Hizmet?.HizmetAdi,
-                    Baslangic = r.RandevuTarihi.ToString("dd.MM.yyyy HH:mm"),
-                    Bitis = r.BitisTarihi.ToString("dd.MM.yyyy HH:mm"),
-                    Durum = r.Durum.ToString()
-                }),
-                Antrenor = antrenor != null ? $"{antrenor.Ad} {antrenor.Soyad}" : "Bilinmiyor"
-            });
+                    return Json(new
+                    {
+                        Musait = false,
+                        CakisanRandevular = new List<object>(),
+                        Mesaj = "Antrenör bu gün ve saatte müsait değil (müsaitlik saati yok)."
+                    });
+                }
+
+                // 2. ÇAKIŞAN RANDEVULARI KONTROL ET
+                // TÜM AKTİF RANDEVULARI AL (sadece Onaylandı ve Beklemede değil, ama IptalEdildi, Reddedildi, Gelmeyen hariç)
+                var tumAktifRandevular = await _context.Randevular
+                    .Where(r => r.AntrenorId == antrenorId &&
+                               r.Durum != RandevuDurumu.IptalEdildi &&
+                               r.Durum != RandevuDurumu.Reddedildi &&
+                               r.Durum != RandevuDurumu.Gelmeyen)
+                    .Include(r => r.Kullanici)
+                    .Include(r => r.Hizmet)
+                    .ToListAsync();
+
+                Console.WriteLine($"Toplam aktif randevu sayısı: {tumAktifRandevular.Count}");
+
+                var gercekCakisma = new List<Randevu>();
+
+                foreach (var randevu in tumAktifRandevular)
+                {
+                    // Bitiş tarihi kontrolü - null veya default ise hizmet süresine göre hesapla
+                    var randevuBitis = randevu.BitisTarihi;
+
+                    if (randevuBitis == default(DateTime) || randevuBitis == DateTime.MinValue)
+                    {
+                        // Hizmet süresini bul
+                        var hizmet = await _context.Hizmetler.FindAsync(randevu.HizmetId);
+                        randevuBitis = hizmet != null
+                            ? randevu.RandevuTarihi.AddMinutes(hizmet.SureDakika)
+                            : randevu.RandevuTarihi.AddHours(1);
+                    }
+
+                    Console.WriteLine($"Randevu kontrol: {randevu.RandevuId}, Başlangıç: {randevu.RandevuTarihi}, Bitiş: {randevuBitis}, Durum: {randevu.Durum}");
+
+                    // Çakışma kontrolü
+                    var cakismaVarMi = (baslangic >= randevu.RandevuTarihi && baslangic < randevuBitis) ||
+                                      (bitis > randevu.RandevuTarihi && bitis <= randevuBitis) ||
+                                      (baslangic <= randevu.RandevuTarihi && bitis >= randevuBitis);
+
+                    if (cakismaVarMi)
+                    {
+                        Console.WriteLine($"ÇAKIŞMA BULUNDU: Randevu ID: {randevu.RandevuId}");
+                        gercekCakisma.Add(randevu);
+                    }
+                }
+
+                Console.WriteLine($"Toplam çakışma sayısı: {gercekCakisma.Count}");
+
+                var antrenor = await _context.Antrenorler.FindAsync(antrenorId);
+
+                if (gercekCakisma.Any())
+                {
+                    return Json(new
+                    {
+                        Musait = false,
+                        CakisanRandevular = gercekCakisma.Select(r => new
+                        {
+                            Kullanici = r.Kullanici != null ? $"{r.Kullanici.Ad} {r.Kullanici.Soyad}" : "Bilinmeyen Üye",
+                            Hizmet = r.Hizmet?.HizmetAdi ?? "Bilinmeyen Hizmet",
+                            Baslangic = r.RandevuTarihi.ToString("dd.MM.yyyy HH:mm"),
+                            Bitis = (r.BitisTarihi != default && r.BitisTarihi != DateTime.MinValue
+                                    ? r.BitisTarihi
+                                    : r.RandevuTarihi.AddHours(1)).ToString("dd.MM.yyyy HH:mm"),
+                            Durum = r.Durum.ToString()
+                        }),
+                        Antrenor = antrenor != null ? $"{antrenor.Ad} {antrenor.Soyad}" : "Bilinmiyor",
+                        Mesaj = "Çakışan randevu bulundu."
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        Musait = true,
+                        CakisanRandevular = new List<object>(),
+                        Antrenor = antrenor != null ? $"{antrenor.Ad} {antrenor.Soyad}" : "Bilinmiyor",
+                        Mesaj = "Antrenör müsait."
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"CheckAvailability hatası: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+
+                return Json(new
+                {
+                    Musait = false,
+                    CakisanRandevular = new List<object>(),
+                    Mesaj = $"Müsaitlik kontrolü sırasında bir hata oluştu: {ex.Message}"
+                });
+            }
         }
+
+        // Geçici olarak bir action oluşturabilirsiniz (sadece debug için):
+        [HttpGet]
+        public async Task<IActionResult> FixBitisTarihleri()
+        {
+            try
+            {
+                var randevular = await _context.Randevular
+                    .Where(r => r.BitisTarihi == null || r.BitisTarihi == DateTime.MinValue)
+                    .Include(r => r.Hizmet)
+                    .ToListAsync();
+
+                int fixedCount = 0;
+                foreach (var randevu in randevular)
+                {
+                    if (randevu.Hizmet != null)
+                    {
+                        randevu.BitisTarihi = randevu.RandevuTarihi.AddMinutes(randevu.Hizmet.SureDakika);
+                        fixedCount++;
+                    }
+                    else
+                    {
+                        // Hizmet bulunamazsa varsayılan 60 dakika
+                        randevu.BitisTarihi = randevu.RandevuTarihi.AddMinutes(60);
+                        fixedCount++;
+                    }
+                }
+
+                if (fixedCount > 0)
+                {
+                    await _context.SaveChangesAsync();
+                    return Content($"{fixedCount} randevunun bitiş tarihi düzeltildi.");
+                }
+                else
+                {
+                    return Content("Düzeltilecek randevu bulunamadı.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content($"Hata: {ex.Message}");
+            }
+        }
+
 
         // GET: UyeRandevu/Calendar - Takvim görünümü
         public async Task<IActionResult> Calendar(int? antrenorId = null, DateTime? tarih = null)
@@ -642,35 +847,195 @@ namespace YeniSalon.Controllers
         }
 
         // Yardımcı Metotlar
-        private async Task<bool> IsTimeSlotAvailable(int antrenorId, DateTime startTime, DateTime endTime)
+        // UyeRandevuController.cs içine yeni action'lar ekleyin
+
+        public async Task<IActionResult> GetAvailableDates(int antrenorId, int hizmetId)
         {
-            // Müsaitlik saatlerini kontrol et
-            var dayOfWeek = startTime.DayOfWeek;
-            var timeOfDay = startTime.TimeOfDay;
-
-            var musaitlikVarMi = await _context.MusaitlikSaatleri
-                .AnyAsync(m => m.AntrenorId == antrenorId &&
-                              m.Gun == dayOfWeek &&
-                              m.AktifMi &&
-                              m.BaslangicSaati <= timeOfDay &&
-                              m.BitisSaati >= endTime.TimeOfDay);
-
-            if (!musaitlikVarMi)
+            try
             {
-                return false;
+                var antrenor = await _context.Antrenorler.FindAsync(antrenorId);
+                var hizmet = await _context.Hizmetler.FindAsync(hizmetId);
+
+                if (antrenor == null || hizmet == null)
+                {
+                    return Json(new { success = false, message = "Antrenör veya hizmet bulunamadı." });
+                }
+
+                var musaitlikSaatleri = await _context.MusaitlikSaatleri
+                    .Where(m => m.AntrenorId == antrenorId && m.AktifMi)
+                    .ToListAsync();
+
+                var availableDates = new List<dynamic>();
+                var today = DateTime.Today;
+                var endDate = today.AddDays(30); // 30 gün ilerisine bak
+
+                for (var date = today.AddDays(1); date <= endDate; date = date.AddDays(1))
+                {
+                    var dayOfWeek = date.DayOfWeek;
+
+                    // Bugün ve geçmiş tarihleri atla
+                    if (date.Date <= today.Date)
+                        continue;
+
+                    // Bu gün için müsaitlik var mı kontrol et
+                    var dayMusaitlik = musaitlikSaatleri
+                        .Where(m => m.Gun == dayOfWeek)
+                        .ToList();
+
+                    if (dayMusaitlik.Any())
+                    {
+                        // Bu tarihte en az bir müsait saat var mı kontrol et
+                        var hasAvailableSlot = false;
+
+                        foreach (var musaitlik in dayMusaitlik)
+                        {
+                            // Hizmet süresine göre slotlar oluştur
+                            var startTime = musaitlik.BaslangicSaati;
+                            var endTime = musaitlik.BitisSaati;
+
+                            while (startTime.Add(TimeSpan.FromMinutes(hizmet.SureDakika)) <= endTime)
+                            {
+                                var slotEnd = startTime.Add(TimeSpan.FromMinutes(hizmet.SureDakika));
+                                var slotStartDateTime = date.Add(startTime);
+                                var slotEndDateTime = date.Add(slotEnd);
+
+                                // Çakışma kontrolü
+                                var isAvailable = await IsTimeSlotAvailable(antrenorId, slotStartDateTime, slotEndDateTime);
+
+                                if (isAvailable)
+                                {
+                                    hasAvailableSlot = true;
+                                    break;
+                                }
+
+                                startTime = startTime.Add(TimeSpan.FromMinutes(30));
+                            }
+
+                            if (hasAvailableSlot) break;
+                        }
+
+                        if (hasAvailableSlot)
+                        {
+                            availableDates.Add(new
+                            {
+                                Date = date.ToString("yyyy-MM-dd"),
+                                DisplayText = $"{GetDayNameTurkish(dayOfWeek)}, {date:dd MMMM yyyy}",
+                                DayName = GetDayNameTurkish(dayOfWeek)
+                            });
+                        }
+                    }
+                }
+
+                return Json(new { success = true, dates = availableDates });
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda loglama yapılabilir
+                return Json(new { success = false, message = $"Bir hata oluştu: {ex.Message}" });
+            }
+        }
+
+        // GET: Müsait Saatleri Getir
+        public async Task<IActionResult> GetAvailableTimes(int antrenorId, int hizmetId, string date)
+        {
+            var parsedDate = DateTime.Parse(date);
+            var antrenor = await _context.Antrenorler.FindAsync(antrenorId);
+            var hizmet = await _context.Hizmetler.FindAsync(hizmetId);
+
+            if (antrenor == null || hizmet == null)
+            {
+                return Json(new { success = false, message = "Antrenör veya hizmet bulunamadı." });
             }
 
-            // Çakışan randevuları kontrol et
-            var cakismaVarMi = await _context.Randevular
-                .AnyAsync(r => r.AntrenorId == antrenorId &&
-                              r.Durum != RandevuDurumu.IptalEdildi &&
-                              r.Durum != RandevuDurumu.Reddedildi &&
-                              r.Durum != RandevuDurumu.Gelmeyen &&
-                              ((startTime >= r.RandevuTarihi && startTime < r.BitisTarihi) ||
-                               (endTime > r.RandevuTarihi && endTime <= r.BitisTarihi) ||
-                               (startTime <= r.RandevuTarihi && endTime >= r.BitisTarihi)));
+            var dayOfWeek = parsedDate.DayOfWeek;
+            var musaitlikSaatleri = await _context.MusaitlikSaatleri
+                .Where(m => m.AntrenorId == antrenorId && m.Gun == dayOfWeek && m.AktifMi)
+                .ToListAsync();
 
-            return !cakismaVarMi;
+            var availableTimes = new List<dynamic>();
+
+            foreach (var musaitlik in musaitlikSaatleri)
+            {
+                var startTime = musaitlik.BaslangicSaati;
+                var endTime = musaitlik.BitisSaati;
+
+                // 30 dakikalık slotlar oluştur
+                while (startTime.Add(TimeSpan.FromMinutes(hizmet.SureDakika)) <= endTime)
+                {
+                    var slotEnd = startTime.Add(TimeSpan.FromMinutes(hizmet.SureDakika));
+                    var slotStartDateTime = parsedDate.Add(startTime);
+                    var slotEndDateTime = parsedDate.Add(slotEnd);
+
+                    // Çakışma kontrolü
+                    var isAvailable = await IsTimeSlotAvailable(antrenorId, slotStartDateTime, slotEndDateTime);
+
+                    if (isAvailable)
+                    {
+                        var startTimeString = startTime.ToString(@"hh\:mm");
+                        var endTimeString = slotEnd.ToString(@"hh\:mm");
+
+                        availableTimes.Add(new
+                        {
+                            Time = startTimeString,
+                            DisplayText = $"{startTimeString} - {endTimeString}",
+                            DateTime = slotStartDateTime.ToString("yyyy-MM-ddTHH:mm")
+                        });
+                    }
+
+                    startTime = startTime.Add(TimeSpan.FromMinutes(30));
+                }
+            }
+
+            // Saatlere göre sırala
+            availableTimes = availableTimes.OrderBy(t => t.Time).ToList();
+
+            return Json(new { success = true, times = availableTimes });
+        }
+
+        // Çakışma kontrolü için yardımcı metod
+        private async Task<bool> IsTimeSlotAvailable(int antrenorId, DateTime startTime, DateTime endTime)
+        {
+            try
+            {
+                // TÜM AKTİF RANDEVULARI AL
+                var tumAktifRandevular = await _context.Randevular
+                    .Where(r => r.AntrenorId == antrenorId &&
+                               r.Durum != RandevuDurumu.IptalEdildi &&
+                               r.Durum != RandevuDurumu.Reddedildi &&
+                               r.Durum != RandevuDurumu.Gelmeyen)
+                    .ToListAsync();
+
+                foreach (var randevu in tumAktifRandevular)
+                {
+                    // Bitiş tarihi kontrolü
+                    var randevuBitis = randevu.BitisTarihi;
+
+                    if (randevuBitis == default(DateTime) || randevuBitis == DateTime.MinValue)
+                    {
+                        var hizmet = await _context.Hizmetler.FindAsync(randevu.HizmetId);
+                        randevuBitis = hizmet != null
+                            ? randevu.RandevuTarihi.AddMinutes(hizmet.SureDakika)
+                            : randevu.RandevuTarihi.AddHours(1);
+                    }
+
+                    // Çakışma kontrolü
+                    var cakismaVarMi = (startTime >= randevu.RandevuTarihi && startTime < randevuBitis) ||
+                                      (endTime > randevu.RandevuTarihi && endTime <= randevuBitis) ||
+                                      (startTime <= randevu.RandevuTarihi && endTime >= randevuBitis);
+
+                    if (cakismaVarMi)
+                    {
+                        return false; // Çakışma var
+                    }
+                }
+
+                return true; // Çakışma yok
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"IsTimeSlotAvailable hatası: {ex.Message}");
+                return false;
+            }
         }
 
         private string GetDayNameTurkish(DayOfWeek day)

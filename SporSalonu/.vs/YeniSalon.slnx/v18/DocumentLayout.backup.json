@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\randevu\\onaybekleyen.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\randevu\\onaybekleyen.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\randevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\randevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\selectdate.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\selectdate.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\uyerandevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\uyerandevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\models\\randevu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:models\\randevu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\randevu\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\randevu\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\randevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\randevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,72 +38,85 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OnayBekleyen.cshtml",
-              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\Randevu\\OnayBekleyen.cshtml",
-              "RelativeDocumentMoniker": "Views\\Randevu\\OnayBekleyen.cshtml",
-              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\Randevu\\OnayBekleyen.cshtml",
-              "RelativeToolTip": "Views\\Randevu\\OnayBekleyen.cshtml",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAwwH4AAAABAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\Randevu\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\Randevu\\Details.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\Randevu\\Details.cshtml",
+              "RelativeToolTip": "Views\\Randevu\\Details.cshtml",
+              "ViewState": "AgIAAFkBAAAAAAAAAAAwwHoBAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-13T17:12:30.304Z",
+              "WhenOpened": "2025-12-14T17:22:26.558Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
+              "Title": "RandevuController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\RandevuController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RandevuController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\RandevuController.cs",
+              "RelativeToolTip": "Controllers\\RandevuController.cs",
+              "ViewState": "AgIAAGIDAAAAAAAAAAAzwHoDAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-14T17:21:14.019Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\UyeRandevu\\Index.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Index.cshtml",
+              "RelativeToolTip": "Views\\UyeRandevu\\Index.cshtml",
+              "ViewState": "AgIAAPgAAAAAAAAAAAAwwBkBAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T17:17:58.877Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "UyeRandevuController.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\UyeRandevuController.cs",
               "RelativeDocumentMoniker": "Controllers\\UyeRandevuController.cs",
               "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\UyeRandevuController.cs",
               "RelativeToolTip": "Controllers\\UyeRandevuController.cs",
-              "ViewState": "AgIAAN0AAAAAAAAAAAAwwP4AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAFEBAAAAAAAAAAAAAGkBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T17:10:29.614Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d84ee353-0bef-5a41-a649-8f89aca5d84d}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Randevu.cs",
-              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Models\\Randevu.cs",
-              "RelativeDocumentMoniker": "Models\\Randevu.cs",
-              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Models\\Randevu.cs",
-              "RelativeToolTip": "Models\\Randevu.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAiwC4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T17:07:23.331Z",
+              "WhenOpened": "2025-12-14T17:11:47.614Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "RandevuController.cs",
-              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\RandevuController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RandevuController.cs",
-              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\RandevuController.cs*",
-              "RelativeToolTip": "Controllers\\RandevuController.cs*",
-              "ViewState": "AgIAAL8AAAAAAAAAAIAwwNEAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T17:05:45.189Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Create.cshtml",
               "RelativeDocumentMoniker": "Views\\UyeRandevu\\Create.cshtml",
               "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Create.cshtml",
               "RelativeToolTip": "Views\\UyeRandevu\\Create.cshtml",
-              "ViewState": "AgIAABoAAAAAAAAAAAAwwJgAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-13T16:58:21.988Z",
+              "WhenOpened": "2025-12-14T17:07:14.741Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SelectDate.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\SelectDate.cshtml",
+              "RelativeDocumentMoniker": "Views\\UyeRandevu\\SelectDate.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\SelectDate.cshtml",
+              "RelativeToolTip": "Views\\UyeRandevu\\SelectDate.cshtml",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAAANsAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T16:58:22.74Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d84ee353-0bef-5a41-a649-8f89aca5d84d}"
             }
           ]
         }
