@@ -12,9 +12,6 @@ namespace YeniSalon.Models
         [Required]
         public int AntrenorId { get; set; }
 
-        [ForeignKey("AntrenorId")]
-        public virtual Antrenor? Antrenor { get; set; }
-
         [Required]
         public DayOfWeek Gun { get; set; }
 
@@ -27,5 +24,9 @@ namespace YeniSalon.Models
         public TimeSpan BitisSaati { get; set; }
 
         public bool AktifMi { get; set; } = true;
+
+        [ForeignKey("AntrenorId")]
+        public virtual Antrenor? Antrenor { get; set; }
+
     }
 }

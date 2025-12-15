@@ -1,0 +1,158 @@
+﻿@model YeniSalon.Models.AIEgzersizOneri
+
+@{
+    ViewData["Title"] = "Öneri Detayı";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4><i class="fas fa-robot text-primary"></i> @Model.IstekTipi.ToString()</h4>
+                        <span class="badge bg-secondary">@Model.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Kullanıcı Bilgileri -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Vücut Bilgileriniz:</h5>
+                            <ul class="list-group list-group-flush">
+                                @if (Model.Yas.HasValue)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Yaş:</span>
+                                        <span>@Model.Yas</span>
+                                    </li>
+                                }
+                                @if (Model.Cinsiyet.HasValue)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Cinsiyet:</span>
+                                        <span>@Model.Cinsiyet</span>
+                                    </li>
+                                }
+                                @if (Model.Boy.HasValue)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Boy:</span>
+                                        <span>@Model.Boy cm</span>
+                                    </li>
+                                }
+                                @if (Model.Kilo.HasValue)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Kilo:</span>
+                                        <span>@Model.Kilo kg</span>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Hedef))
+                                {
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Hedef:</span>
+                                        <span>@Model.Hedef</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <!-- Fotoğraflar -->
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                            {
+                                <h5>Yüklediğiniz Fotoğraf:</h5>
+                                <img src="@Model.FotoUrl" class="img-fluid rounded mb-3" alt="Yüklenen fotoğraf">
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.AIGorselUrl))
+                            {
+                                <h5>AI Görsel:</h5>
+                                <img src="@Model.AIGorselUrl" class="img-fluid rounded" alt="AI Görsel">
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Girilen Bilgi -->
+                    @if (!string.IsNullOrEmpty(Model.GirilenBilgi))
+                    {
+                        <div class="mb-4">
+                            <h5>Sorunuz / Açıklamanız:</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    @Model.GirilenBilgi
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- AI Yanıtı -->
+                    <div class="mb-4">
+                        <h5><i class="fas fa-brain text-primary"></i> Yapay Zeka Yanıtı:</h5>
+                        <div class="card border-primary">
+                            <div class="card-body">
+                                @if (Model.IstekTipi == IstekTipi.GorselSimulasyon && !string.IsNullOrEmpty(Model.AIGorselUrl))
+                                {
+                                    <div class="text-center mb-3">
+                                        <img src="@Model.AIGorselUrl" class="img-fluid rounded" alt="AI Görsel">
+                                    </div>
+                                }
+                                <div class="ai-response">
+                                    @Html.Raw(Model.AIYaniti.Replace("\n", "<br>"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uyarı -->
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Önemli:</strong> Bu öneriler yapay zeka tarafından oluşturulmuştur ve profesyonel
+                        tıbbi tavsiye yerine geçmez. Herhangi bir sağlık sorununuz varsa mutlaka
+                        doktorunuza danışın.
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Listeye Dön
+                        </a>
+                        <div>
+                            <a asp-action="Create" class="btn btn-primary me-2">
+                                <i class="fas fa-plus"></i> Yeni Öneri Al
+                            </a>
+                            <form asp-action="Delete" method="post" style="display:inline"
+                                  onsubmit="return confirm('Bu öneriyi silmek istediğinize emin misiniz?')">
+                                <input type="hidden" name="id" value="@Model.OneriId" />
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ai-response {
+        line-height: 1.8;
+    }
+
+        .ai-response strong {
+            color: #0d6efd;
+        }
+
+        .ai-response ul {
+            padding-left: 20px;
+        }
+
+        .ai-response li {
+            margin-bottom: 8px;
+        }
+</style>

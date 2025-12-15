@@ -1,0 +1,163 @@
+﻿@model YeniSalon.Controllers.AIEgzersizOneriViewModel
+
+@{
+    ViewData["Title"] = "Yapay Zeka Önerisi Al";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-robot text-primary"></i> Yapay Zeka Önerisi Al</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="IstekTipi" class="form-label"></label>
+                                    <select asp-for="IstekTipi" class="form-select" id="istekTipi">
+                                        <option value="">Seçiniz</option>
+                                        <option value="@IstekTipi.EgzersizOnerisi">Egzersiz Önerisi</option>
+                                        <option value="@IstekTipi.DiyetOnerisi">Diyet Önerisi</option>
+                                        <option value="@IstekTipi.GorselSimulasyon">Görsel Simülasyon</option>
+                                        <option value="@IstekTipi.VucutAnalizi">Vücut Analizi</option>
+                                    </select>
+                                    <span asp-validation-for="IstekTipi" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vücut Bilgileri -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Yas" class="form-label"></label>
+                                    <input asp-for="Yas" class="form-control" type="number" min="10" max="100">
+                                    <span asp-validation-for="Yas" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Cinsiyet" class="form-label"></label>
+                                    <select asp-for="Cinsiyet" class="form-select">
+                                        <option value="">Seçiniz</option>
+                                        <option value="@Cinsiyet.Erkek">Erkek</option>
+                                        <option value="@Cinsiyet.Kadın">Kadın</option>
+                                    </select>
+                                    <span asp-validation-for="Cinsiyet" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Boy" class="form-label"></label>
+                                    <input asp-for="Boy" class="form-control" type="number" min="100" max="250">
+                                    <span asp-validation-for="Boy" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label asp-for="Kilo" class="form-label"></label>
+                                    <input asp-for="Kilo" class="form-control" type="number" step="0.1" min="30" max="200">
+                                    <span asp-validation-for="Kilo" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fotoğraf Yükleme -->
+                        <div class="mb-3" id="fotoSection" style="display: none;">
+                            <label asp-for="Foto" class="form-label">Fotoğraf Yükle</label>
+                            <input asp-for="Foto" class="form-control" type="file" accept="image/*">
+                            <small class="text-muted">Sadece Vücut Analizi için gereklidir. Max 5MB</small>
+                            <span asp-validation-for="Foto" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Hedef" class="form-label"></label>
+                            <input asp-for="Hedef" class="form-control" placeholder="Örn: Kilo vermek, kas yapmak, fit kalmak...">
+                            <span asp-validation-for="Hedef" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GirilenBilgi" class="form-label"></label>
+                            <textarea asp-for="GirilenBilgi" class="form-control" rows="6"
+                                      placeholder="Detaylı bilgi verirseniz daha iyi öneriler alabilirsiniz..."></textarea>
+                            <span asp-validation-for="GirilenBilgi" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Not:</strong> Yapay zeka önerileri kişiselleştirilmiş tavsiyelerdir ancak
+                            profesyonel tıbbi öneri yerine geçmez. Önemli sağlık sorunlarınız varsa
+                            doktorunuza danışın.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary me-md-2">İptal</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-robot"></i> Yapay Zekaya Sor
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#istekTipi').change(function() {
+                var selectedType = $(this).val();
+                if (selectedType === '@IstekTipi.VucutAnalizi') {
+                    $('#fotoSection').show();
+                } else {
+                    $('#fotoSection').hide();
+                }
+            });
+
+            // Hızlı öneri butonu
+            $('#quickSuggestionBtn').click(function() {
+                var goal = $('#Hedef').val();
+                var age = $('#Yas').val();
+                var gender = $('#Cinsiyet').val();
+                var height = $('#Boy').val();
+                var weight = $('#Kilo').val();
+
+                if (!goal) {
+                    alert('Lütfen bir hedef giriniz.');
+                    return;
+                }
+
+                $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
+
+                $.ajax({
+                    url: '@Url.Action("QuickExerciseSuggestion", "AIEgzersizOneri")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        goal: goal,
+                        age: age,
+                        gender: gender,
+                        height: height,
+                        weight: weight
+                    }),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#GirilenBilgi').val(response.response);
+                        } else {
+                            alert('Bir hata oluştu: ' + response.error);
+                        }
+                        $('#quickSuggestionBtn').prop('disabled', false).html('<i class="fas fa-bolt"></i> Hızlı Öneri Al');
+                    },
+                    error: function() {
+                        alert('Sunucu hatası. Lütfen tekrar deneyin.');
+                        $('#quickSuggestionBtn').prop('disabled', false).html('<i class="fas fa-bolt"></i> Hızlı Öneri Al');
+                    }
+                });
+            });
+        });
+    </script>
+}

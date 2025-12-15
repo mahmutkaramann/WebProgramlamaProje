@@ -36,7 +36,7 @@ namespace YeniSalon.Models
         public int? Yas { get; set; }
 
         [Display(Name = "Cinsiyet")]
-        public Cinsiyet? Cinsiyet { get; set; }
+        public Cinsiyet? Cinsiyet { get; set; } // Artık ApplicationUser'daki Cinsiyet enum'unu kullanıyor
 
         [Display(Name = "Hedef")]
         [MaxLength(500)]
@@ -55,6 +55,7 @@ namespace YeniSalon.Models
         public DateTime OlusturulmaTarihi { get; set; } = DateTime.Now;
     }
 
+    // Bu enum'u ayrı tanımlayalım (ApplicationUser'daki Cinsiyet'ten farklı)
     public enum IstekTipi
     {
         [Display(Name = "Egzersiz Önerisi")]

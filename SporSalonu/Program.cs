@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.EntityFrameworkCore;
 using YeniSalon.Data;
 using YeniSalon.Models;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using YeniSalon.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+
+// OpenAI servisini ekleme
+builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAI"));
+builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
 
 // Cookie settings
 builder.Services.ConfigureApplicationCookie(options =>
