@@ -77,7 +77,7 @@
                             <p class="card-text">
                                 @if (item.GirilenBilgi.Length > 150)
                                 {
-                                    @item.GirilenBilgi.Substring(0, 150)
+                                    @(item.GirilenBilgi.Length > 150 ? item.GirilenBilgi.Substring(0, 150) + "..." : item.GirilenBilgi)
                                                         }
                                 else
                                 {

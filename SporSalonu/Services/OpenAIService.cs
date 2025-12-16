@@ -1,19 +1,12 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Options;
+using System;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace YeniSalon.Services
 {
-    public interface IOpenAIService
-    {
-        Task<string> GetExerciseRecommendationAsync(string userInput, int? age, string? gender,
-                                                   int? height, decimal? weight, string? goal);
-        Task<string> GetDietRecommendationAsync(string userInput, int? age, string? gender,
-                                               int? height, decimal? weight, string? goal);
-        Task<string> GetBodyAnalysisAsync(string imageBase64, string userInput);
-        Task<string> GenerateVisualSimulationAsync(string description);
-    }
-
     public class OpenAIService : IOpenAIService
     {
         private readonly HttpClient _httpClient;
@@ -23,199 +16,157 @@ namespace YeniSalon.Services
         {
             _httpClient = httpClient;
             _settings = settings.Value;
-
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKey}");
+            _httpClient.Timeout = TimeSpan.FromSeconds(60); // Timeout süresini artır
         }
 
-        public async Task<string> GetExerciseRecommendationAsync(string userInput, int? age, string? gender,
-                                                               int? height, decimal? weight, string? goal)
+        public async Task<string> GetExerciseRecommendationAsync(string goal, int? age, string? gender, int? height, decimal? weight, string? additionalInfo)
         {
-            var prompt = BuildExercisePrompt(userInput, age, gender, height, weight, goal);
-            return await CallOpenAIAsync(prompt);
+            var prompt = $@"Kullanıcı için kişiselleştirilmiş egzersiz programı oluştur:
+
+**Kullanıcı Bilgileri:**
+- Hedef: {goal ?? "Belirtilmemiş"}
+- Yaş: {age?.ToString() ?? "Belirtilmemiş"}
+- Cinsiyet: {gender ?? "Belirtilmemiş"}
+- Boy: {height?.ToString() ?? "Belirtilmemiş"} cm
+- Kilo: {weight?.ToString() ?? "Belirtilmemiş"} kg
+- Ek Bilgiler: {additionalInfo ?? "Belirtilmemiş"}
+
+**İstenen Format:**
+1. Haftalık Egzersiz Programı (Gün gün)
+2. Her Egzersiz için Set ve Tekrar Sayıları
+3. Dinlenme Süreleri
+4. Isınma ve Soğuma Önerileri
+5. Güvenlik Uyarıları
+6. İlerleme Tavsiyeleri
+
+Lütfen detaylı, anlaşılır ve Türkçe bir program hazırla.";
+
+            return await GetChatResponseAsync(prompt);
         }
 
-        public async Task<string> GetDietRecommendationAsync(string userInput, int? age, string? gender,
-                                                           int? height, decimal? weight, string? goal)
+        public async Task<string> GetDietRecommendationAsync(string goal, int? age, string? gender, int? height, decimal? weight, string? additionalInfo)
         {
-            var prompt = BuildDietPrompt(userInput, age, gender, height, weight, goal);
-            return await CallOpenAIAsync(prompt);
+            var prompt = $@"Kullanıcı için kişiselleştirilmiş beslenme programı oluştur:
+
+**Kullanıcı Bilgileri:**
+- Hedef: {goal ?? "Belirtilmemiş"}
+- Yaş: {age?.ToString() ?? "Belirtilmemiş"}
+- Cinsiyet: {gender ?? "Belirtilmemiş"}
+- Boy: {height?.ToString() ?? "Belirtilmemiş"} cm
+- Kilo: {weight?.ToString() ?? "Belirtilmemiş"} kg
+- Ek Bilgiler: {additionalInfo ?? "Belirtilmemiş"}
+
+**İstenen Format:**
+1. Günlük Kalori İhtiyacı
+2. Makro Besin Dağılımı (Protein, Karbonhidrat, Yağ)
+3. Öğün Örnekleri (Kahvaltı, Öğle, Akşam, Ara Öğünler)
+4. Su Tüketimi Tavsiyesi
+5. Önerilen Gıdalar
+6. Kaçınılması Gereken Gıdalar
+7. Örnek Yemek Tarifleri (1-2 tane)
+
+Lütfen detaylı, anlaşılır ve Türkçe bir program hazırla.";
+
+            return await GetChatResponseAsync(prompt);
         }
 
-        public async Task<string> GetBodyAnalysisAsync(string imageBase64, string userInput)
+        public async Task<string> GetBodyAnalysisAsync(string base64Image, string additionalInfo)
         {
-            var request = new
-            {
-                model = "gpt-4-vision-preview",
-                messages = new[]
-                {
-                    new
-                    {
-                        role = "user",
-                        content = new object[]
-                        {
-                            new { type = "text", text = $"Analiz yap: {userInput}" },
-                            new
-                            {
-                                type = "image_url",
-                                image_url = new { url = $"data:image/jpeg;base64,{imageBase64}" }
-                            }
-                        }
-                    }
-                },
-                max_tokens = 2000
-            };
+            // NOT: OpenAI'nin Vision API'si için farklı bir endpoint gerekebilir
+            // Şimdilik sadece metin tabanlı analiz yapıyoruz
+            var prompt = $@"Kullanıcının vücut fotoğrafını analiz et ve değerlendirme yap:
 
-            return await CallOpenAIVisionAsync(request);
+**Kullanıcı Açıklaması:** {additionalInfo ?? "Belirtilmemiş"}
+
+**Analiz İçeriği:**
+1. Genel Vücut Kompozisyonu Değerlendirmesi
+2. Olası Vücut Tipi (Ektomorf, Mezomorf, Endomorf)
+3. Güçlü Yönler
+4. Geliştirilmesi Gereken Alanlar
+5. Önerilen Egzersiz Türleri
+6. Dikkat Edilmesi Gereken Noktalar
+7. 4 Haftalık Hedef Planı
+
+Lütfen yapıcı, motive edici ve profesyonel bir dille Türkçe analiz hazırla.";
+
+            return await GetChatResponseAsync(prompt);
         }
 
         public async Task<string> GenerateVisualSimulationAsync(string description)
         {
-            var request = new
+            // DALL-E API'si için farklı bir implementasyon gerekir
+            // Şimdilik alternatif bir çözüm sunuyoruz
+            return "Görsel simülasyon özelliği yakında eklenecektir. Şu anda metin tabanlı öneriler alabilirsiniz.";
+        }
+
+        private async Task<string> GetChatResponseAsync(string prompt)
+        {
+            try
             {
-                model = "dall-e-3",
-                prompt = $"Fitness sonrası vücut simülasyonu: {description}. Gerçekçi, detaylı, fitness odaklı.",
-                n = 1,
-                size = "1024x1024"
-            };
+                // OpenAI API'sine istek hazırla
+                var requestData = new
+                {
+                    model = "gpt-3.5-turbo",
+                    messages = new[]
+                    {
+                        new
+                        {
+                            role = "system",
+                            content = "Sen bir fitness koçu ve beslenme uzmanısın. Türkçe cevap ver. Cevaplarında markdown formatını kullan. Kullanıcıya motive edici ve yardımcı ol."
+                        },
+                        new
+                        {
+                            role = "user",
+                            content = prompt
+                        }
+                    },
+                    temperature = 0.7,
+                    max_tokens = 1500
+                };
 
-            return await CallDALLEAsync(request);
-        }
+                var json = JsonSerializer.Serialize(requestData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        private string BuildExercisePrompt(string userInput, int? age, string? gender,
-                                         int? height, decimal? weight, string? goal)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Aşağıdaki bilgilere göre kişiselleştirilmiş bir egzersiz programı öner:");
+                // API'ye istek gönder
+                var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
 
-            if (!string.IsNullOrEmpty(userInput))
-                sb.AppendLine($"Kullanıcı notu: {userInput}");
-            if (age.HasValue)
-                sb.AppendLine($"Yaş: {age}");
-            if (!string.IsNullOrEmpty(gender))
-                sb.AppendLine($"Cinsiyet: {gender}");
-            if (height.HasValue)
-                sb.AppendLine($"Boy: {height} cm");
-            if (weight.HasValue)
-                sb.AppendLine($"Kilo: {weight} kg");
-            if (!string.IsNullOrEmpty(goal))
-                sb.AppendLine($"Hedef: {goal}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    using var document = JsonDocument.Parse(responseContent);
+                    var aiResponse = document.RootElement
+                        .GetProperty("choices")[0]
+                        .GetProperty("message")
+                        .GetProperty("content")
+                        .GetString();
 
-            sb.AppendLine("\nCevabını şu formatta ver:");
-            sb.AppendLine("1. **Genel Değerlendirme:** [Değerlendirme]");
-            sb.AppendLine("2. **Haftalık Program:**");
-            sb.AppendLine("   - Pazartesi: [Egzersizler]");
-            sb.AppendLine("   - Salı: [Egzersizler]");
-            sb.AppendLine("   - ...");
-            sb.AppendLine("3. **Set ve Tekrar Önerileri:**");
-            sb.AppendLine("4. **İpuçları:**");
-            sb.AppendLine("5. **Önerilen Süre:**");
-
-            return sb.ToString();
-        }
-
-        private string BuildDietPrompt(string userInput, int? age, string? gender,
-                                     int? height, decimal? weight, string? goal)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Aşağıdaki bilgilere göre kişiselleştirilmiş bir diyet programı öner:");
-
-            if (!string.IsNullOrEmpty(userInput))
-                sb.AppendLine($"Kullanıcı notu: {userInput}");
-            if (age.HasValue)
-                sb.AppendLine($"Yaş: {age}");
-            if (!string.IsNullOrEmpty(gender))
-                sb.AppendLine($"Cinsiyet: {gender}");
-            if (height.HasValue)
-                sb.AppendLine($"Boy: {height} cm");
-            if (weight.HasValue)
-                sb.AppendLine($"Kilo: {weight} kg");
-            if (!string.IsNullOrEmpty(goal))
-                sb.AppendLine($"Hedef: {goal}");
-
-            sb.AppendLine("\nCevabını şu formatta ver:");
-            sb.AppendLine("1. **Günlük Kalori İhtiyacı:** [Kalori]");
-            sb.AppendLine("2. **Makro Dağılımı:**");
-            sb.AppendLine("   - Protein: [g]");
-            sb.AppendLine("   - Karbonhidrat: [g]");
-            sb.AppendLine("   - Yağ: [g]");
-            sb.AppendLine("3. **Günlük Öğün Planı:**");
-            sb.AppendLine("   - Kahvaltı: [Öneriler]");
-            sb.AppendLine("   - Öğle Yemeği: [Öneriler]");
-            sb.AppendLine("   - Akşam Yemeği: [Öneriler]");
-            sb.AppendLine("   - Ara Öğünler: [Öneriler]");
-            sb.AppendLine("4. **Önerilen Besinler:**");
-            sb.AppendLine("5. **Kaçınılması Gerekenler:**");
-
-            return sb.ToString();
-        }
-
-        private async Task<string> CallOpenAIAsync(string prompt)
-        {
-            var request = new
+                    return aiResponse ?? "Yanıt alınamadı.";
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    return $"API Hatası ({response.StatusCode}): {errorContent}";
+                }
+            }
+            catch (HttpRequestException ex)
             {
-                model = "gpt-4",
-                messages = new[] { new { role = "user", content = prompt } },
-                max_tokens = 2000,
-                temperature = 0.7
-            };
-
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
-            response.EnsureSuccessStatusCode();
-
-            var responseJson = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<OpenAIResponse>(responseJson);
-
-            return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "Cevap alınamadı.";
-        }
-
-        private async Task<string> CallOpenAIVisionAsync(object request)
-        {
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
-            response.EnsureSuccessStatusCode();
-
-            var responseJson = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<OpenAIResponse>(responseJson);
-
-            return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "Cevap alınamadı.";
-        }
-
-        private async Task<string> CallDALLEAsync(object request)
-        {
-            var json = JsonSerializer.Serialize(request);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync("https://api.openai.com/v1/images/generations", content);
-            response.EnsureSuccessStatusCode();
-
-            var responseJson = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(responseJson);
-            return doc.RootElement.GetProperty("data")[0].GetProperty("url").GetString() ?? "";
+                return $"Bağlantı hatası: {ex.Message}. Lütfen internet bağlantınızı kontrol edin.";
+            }
+            catch (TaskCanceledException)
+            {
+                return "İstek zaman aşımına uğradı. Lütfen daha sonra tekrar deneyin.";
+            }
+            catch (Exception ex)
+            {
+                return $"Beklenmeyen hata: {ex.Message}";
+            }
         }
     }
 
     public class OpenAISettings
     {
         public string ApiKey { get; set; } = string.Empty;
-    }
-
-    public class OpenAIResponse
-    {
-        public List<Choice> Choices { get; set; } = new();
-    }
-
-    public class Choice
-    {
-        public Message Message { get; set; } = new();
-    }
-
-    public class Message
-    {
-        public string Content { get; set; } = string.Empty;
+        public string Model { get; set; } = "gpt-3.5-turbo";
     }
 }

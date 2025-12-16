@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using YeniSalon.Data;
 using YeniSalon.Models;
 using YeniSalon.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace YeniSalon.Controllers
@@ -29,7 +32,7 @@ namespace YeniSalon.Controllers
             _environment = environment;
         }
 
-        // GET: AIEgzersizOneri
+        // GET: AIEgzersizOneri - INDEX METODU EKSİKTİ
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -58,13 +61,33 @@ namespace YeniSalon.Controllers
             return View(oneriler);
         }
 
-        // GET: AIEgzersizOneri/Create
-        public IActionResult Create()
+        // GET: AIEgzersizOneri/Create - GÜNCELLENMİŞ VERSİYON
+        public async Task<IActionResult> Create()
         {
-            return View(new AIEgzersizOneriViewModel());
+            var user = await _userManager.GetUserAsync(User);
+            var model = new AIEgzersizOneriViewModel();
+
+            if (user != null)
+            {
+                // Kullanıcı bilgilerini otomatik doldur
+                model.Cinsiyet = user.Cinsiyet;
+                model.Boy = user.Boy;
+                model.Kilo = user.Kilo;
+
+                // Yaşı hesapla
+                if (user.DogumTarihi != default)
+                {
+                    var today = DateTime.Today;
+                    var age = today.Year - user.DogumTarihi.Year;
+                    if (user.DogumTarihi.Date > today.AddYears(-age)) age--;
+                    model.Yas = age;
+                }
+            }
+
+            return View(model);
         }
 
-        // POST: AIEgzersizOneri/Create
+        // POST: AIEgzersizOneri/Create - GÜNCELLENMİŞ VERSİYON
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AIEgzersizOneriViewModel model)
@@ -75,138 +98,144 @@ namespace YeniSalon.Controllers
                 return Unauthorized();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    string aiResponse = string.Empty;
-                    string? imageUrl = null;
-                    string? aiImageUrl = null;
-
-                    // Dosya yükleme
-                    if (model.Foto != null && model.Foto.Length > 0)
-                    {
-                        // Dosya boyutu kontrolü (max 5MB)
-                        if (model.Foto.Length > 5 * 1024 * 1024)
-                        {
-                            ModelState.AddModelError("Foto", "Dosya boyutu 5MB'dan küçük olmalıdır.");
-                            return View(model);
-                        }
-
-                        var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "ai-requests");
-                        if (!Directory.Exists(uploadsFolder))
-                            Directory.CreateDirectory(uploadsFolder);
-
-                        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.Foto.FileName)}";
-                        var filePath = Path.Combine(uploadsFolder, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await model.Foto.CopyToAsync(stream);
-                        }
-
-                        imageUrl = $"/uploads/ai-requests/{fileName}";
-                    }
-
-                    // Yapay zekadan cevap al
-                    switch (model.IstekTipi)
-                    {
-                        case IstekTipi.EgzersizOnerisi:
-                            aiResponse = await _openAIService.GetExerciseRecommendationAsync(
-                                model.GirilenBilgi,
-                                model.Yas,
-                                model.Cinsiyet?.ToString(),
-                                model.Boy,
-                                model.Kilo,
-                                model.Hedef
-                            );
-                            break;
-
-                        case IstekTipi.DiyetOnerisi:
-                            aiResponse = await _openAIService.GetDietRecommendationAsync(
-                                model.GirilenBilgi,
-                                model.Yas,
-                                model.Cinsiyet?.ToString(),
-                                model.Boy,
-                                model.Kilo,
-                                model.Hedef
-                            );
-                            break;
-
-                        case IstekTipi.GorselSimulasyon:
-                            if (!string.IsNullOrEmpty(model.GirilenBilgi))
-                            {
-                                try
-                                {
-                                    aiImageUrl = await _openAIService.GenerateVisualSimulationAsync(model.GirilenBilgi);
-                                    aiResponse = "Görsel simülasyon başarıyla oluşturuldu. Aşağıda oluşturulan görseli görebilirsiniz.";
-                                }
-                                catch (Exception ex)
-                                {
-                                    aiResponse = $"Görsel oluşturulurken hata: {ex.Message}";
-                                }
-                            }
-                            break;
-
-                        case IstekTipi.VucutAnalizi:
-                            if (model.Foto != null)
-                            {
-                                try
-                                {
-                                    using var memoryStream = new MemoryStream();
-                                    await model.Foto.CopyToAsync(memoryStream);
-                                    var imageBytes = memoryStream.ToArray();
-                                    var base64Image = Convert.ToBase64String(imageBytes);
-
-                                    aiResponse = await _openAIService.GetBodyAnalysisAsync(
-                                        base64Image,
-                                        model.GirilenBilgi
-                                    );
-                                }
-                                catch (Exception ex)
-                                {
-                                    aiResponse = $"Vücut analizi sırasında hata: {ex.Message}";
-                                }
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("Foto", "Vücut analizi için fotoğraf yüklemelisiniz.");
-                                return View(model);
-                            }
-                            break;
-                    }
-
-                    // Veritabanına kaydet
-                    var oneri = new AIEgzersizOneri
-                    {
-                        KullaniciId = user.Id,
-                        IstekTipi = model.IstekTipi,
-                        GirilenBilgi = model.GirilenBilgi,
-                        Boy = model.Boy,
-                        Kilo = model.Kilo,
-                        Yas = model.Yas,
-                        Cinsiyet = model.Cinsiyet,
-                        Hedef = model.Hedef,
-                        FotoUrl = imageUrl,
-                        AIYaniti = aiResponse,
-                        AIGorselUrl = aiImageUrl,
-                        OlusturulmaTarihi = DateTime.Now
-                    };
-
-                    _context.AIEgzersizOnerileri.Add(oneri);
-                    await _context.SaveChangesAsync();
-
-                    TempData["SuccessMessage"] = "Yapay zeka öneriniz başarıyla oluşturuldu!";
-                    return RedirectToAction(nameof(Details), new { id = oneri.OneriId });
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = $"Bir hata oluştu: {ex.Message}";
-                    ModelState.AddModelError("", $"Bir hata oluştu: {ex.Message}");
-                }
+                return View(model);
             }
 
-            return View(model);
+            try
+            {
+                string aiResponse = string.Empty;
+                string? imageUrl = null;
+                string? aiImageUrl = null;
+
+                // Dosya yükleme
+                if (model.Foto != null && model.Foto.Length > 0)
+                {
+                    if (model.Foto.Length > 5 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("Foto", "Dosya boyutu 5MB'dan küçük olmalıdır.");
+                        return View(model);
+                    }
+
+                    var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "ai-requests");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.Foto.FileName)}";
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.Foto.CopyToAsync(stream);
+                    }
+
+                    imageUrl = $"/uploads/ai-requests/{fileName}";
+                }
+
+                // Yapay zekadan cevap al
+                switch (model.IstekTipi)
+                {
+                    case IstekTipi.EgzersizOnerisi:
+                        aiResponse = await _openAIService.GetExerciseRecommendationAsync(
+                            model.GirilenBilgi,
+                            model.Yas,
+                            model.Cinsiyet?.ToString(),
+                            model.Boy,
+                            model.Kilo,
+                            model.Hedef
+                        );
+                        break;
+
+                    case IstekTipi.DiyetOnerisi:
+                        aiResponse = await _openAIService.GetDietRecommendationAsync(
+                            model.GirilenBilgi,
+                            model.Yas,
+                            model.Cinsiyet?.ToString(),
+                            model.Boy,
+                            model.Kilo,
+                            model.Hedef
+                        );
+                        break;
+
+                    case IstekTipi.GorselSimulasyon:
+                        if (!string.IsNullOrEmpty(model.GirilenBilgi))
+                        {
+                            try
+                            {
+                                aiResponse = await _openAIService.GenerateVisualSimulationAsync(model.GirilenBilgi);
+                                // Görsel simülasyon için uygun mesaj
+                                if (aiResponse.Contains("http") || aiResponse.Contains("www"))
+                                {
+                                    aiImageUrl = aiResponse;
+                                    aiResponse = "Görsel simülasyon başarıyla oluşturuldu. Aşağıda oluşturulan görseli görebilirsiniz.";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                aiResponse = $"Görsel simülasyon oluşturulamadı: {ex.Message}";
+                            }
+                        }
+                        break;
+
+                    case IstekTipi.VucutAnalizi:
+                        if (model.Foto != null)
+                        {
+                            try
+                            {
+                                using var memoryStream = new MemoryStream();
+                                await model.Foto.CopyToAsync(memoryStream);
+                                var imageBytes = memoryStream.ToArray();
+                                var base64Image = Convert.ToBase64String(imageBytes);
+
+                                aiResponse = await _openAIService.GetBodyAnalysisAsync(
+                                    base64Image,
+                                    model.GirilenBilgi
+                                );
+                            }
+                            catch (Exception ex)
+                            {
+                                aiResponse = $"Vücut analizi sırasında hata: {ex.Message}";
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Foto", "Vücut analizi için fotoğraf yüklemelisiniz.");
+                            return View(model);
+                        }
+                        break;
+                }
+
+                // Veritabanına kaydet
+                var oneri = new AIEgzersizOneri
+                {
+                    KullaniciId = user.Id,
+                    IstekTipi = model.IstekTipi,
+                    GirilenBilgi = model.GirilenBilgi,
+                    Boy = model.Boy,
+                    Kilo = model.Kilo,
+                    Yas = model.Yas,
+                    Cinsiyet = model.Cinsiyet,
+                    Hedef = model.Hedef,
+                    FotoUrl = imageUrl,
+                    AIYaniti = aiResponse,
+                    AIGorselUrl = aiImageUrl,
+                    OlusturulmaTarihi = DateTime.Now
+                };
+
+                _context.AIEgzersizOnerileri.Add(oneri);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Yapay zeka öneriniz başarıyla oluşturuldu!";
+                return RedirectToAction(nameof(Details), new { id = oneri.OneriId });
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda kullanıcı bilgilerini koru
+                TempData["ErrorMessage"] = $"Bir hata oluştu: {ex.Message}";
+                ModelState.AddModelError("", $"Bir hata oluştu: {ex.Message}");
+                return View(model);
+            }
         }
 
         // GET: AIEgzersizOneri/Details/5

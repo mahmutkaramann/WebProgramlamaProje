@@ -7,6 +7,9 @@ using YeniSalon.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Api 
+var openAIConfig = builder.Configuration.GetSection("OpenAI");
+
 // Add services to the container.   
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
