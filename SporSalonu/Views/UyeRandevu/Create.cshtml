@@ -14,6 +14,8 @@
                 <div class="card-body">
                     <form asp-action="Create" id="randevuForm">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <input type="hidden" asp-for="KullaniciId" value="@ViewBag.userId" class="form-control" />
 
                         <!-- Antrenör Seçimi -->
                         <div class="mb-3">
@@ -347,49 +349,49 @@
             console.log('Hizmet süresi:', hizmetSure);
 
             // DEBUG: Önce randevuları kontrol et
-            $.get('/UyeRandevu/DebugRandevular', {
-                antrenorId: selectedAntrenorId,
-                tarih: selectedDateTime.toISOString()
-            }, function(debugResponse) {
-                console.log('DEBUG - Randevular:', debugResponse);
+            // $.get('/UyeRandevu/DebugRandevular', {
+            //     antrenorId: selectedAntrenorId,
+            //     tarih: selectedDateTime.toISOString()
+            // }, function(debugResponse) {
+            //     console.log('DEBUG - Randevular:', debugResponse);
 
-                // DEBUG: Müsaitlik saatlerini kontrol et
-                $.get('/UyeRandevu/DebugMusaitlikSaatleri', {
-                    antrenorId: selectedAntrenorId,
-                    tarih: selectedDateTime.toISOString()
-                }, function(musaitlikResponse) {
-                    console.log('DEBUG - Müsaitlik saatleri:', musaitlikResponse);
+            //     // DEBUG: Müsaitlik saatlerini kontrol et
+            //     $.get('/UyeRandevu/DebugMusaitlikSaatleri', {
+            //         antrenorId: selectedAntrenorId,
+            //         tarih: selectedDateTime.toISOString()
+            //     }, function(musaitlikResponse) {
+            //         console.log('DEBUG - Müsaitlik saatleri:', musaitlikResponse);
 
-                    // Yükleniyor göster
-                    showAvailabilityStatus('<i class="fas fa-spinner fa-spin"></i> Müsaitlik kontrol ediliyor...', 'info');
+            //         // Yükleniyor göster
+            //         showAvailabilityStatus('<i class="fas fa-spinner fa-spin"></i> Müsaitlik kontrol ediliyor...', 'info');
 
-                    // Asıl müsaitlik kontrolü
-                    $.ajax({
-                        url: '/UyeRandevu/CheckAvailability',
-                        type: 'GET',
-                        data: {
-                            antrenorId: selectedAntrenorId,
-                            randevuTarihi: selectedDateTime.toISOString(),
-                            sureDakika: hizmetSure
-                        },
-                        success: function(response) {
-                            console.log('Müsaitlik kontrol yanıtı:', response);
+            //         // Asıl müsaitlik kontrolü
+            //         $.ajax({
+            //             url: '/UyeRandevu/CheckAvailability',
+            //             type: 'GET',
+            //             data: {
+            //                 antrenorId: selectedAntrenorId,
+            //                 randevuTarihi: selectedDateTime.toISOString(),
+            //                 sureDakika: hizmetSure
+            //             },
+            //             success: function(response) {
+            //                 console.log('Müsaitlik kontrol yanıtı:', response);
 
-                            if (response.Musait) {
-                                showAvailabilityStatus('<i class="fas fa-check-circle"></i> ✓ Antrenör bu saatte müsait. Randevu oluşturabilirsiniz.', 'success');
-                                $('#submitBtn').prop('disabled', false);
-                            } else {
-                                showAvailabilityStatus('<i class="fas fa-exclamation-triangle"></i> ⚠ ' + response.Mesaj, 'warning');
-                                $('#submitBtn').prop('disabled', true);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Müsaitlik kontrol hatası:', error);
-                            showAvailabilityStatus('<i class="fas fa-exclamation-triangle"></i> Müsaitlik kontrolü yapılamadı.', 'warning');
-                        }
-                    });
-                });
-            });
+            //                 if (response.Musait) {
+            //                     showAvailabilityStatus('<i class="fas fa-check-circle"></i> ✓ Antrenör bu saatte müsait. Randevu oluşturabilirsiniz.', 'success');
+            //                     $('#submitBtn').prop('disabled', false);
+            //                 } else {
+            //                     showAvailabilityStatus('<i class="fas fa-exclamation-triangle"></i> ⚠ ' + response.Mesaj, 'warning');
+            //                     $('#submitBtn').prop('disabled', true);
+            //                 }
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.error('Müsaitlik kontrol hatası:', error);
+            //                 showAvailabilityStatus('<i class="fas fa-exclamation-triangle"></i> Müsaitlik kontrolü yapılamadı.', 'warning');
+            //             }
+            //         });
+            //     });
+            // });
         }
 
             // Seçilen randevuyu göster

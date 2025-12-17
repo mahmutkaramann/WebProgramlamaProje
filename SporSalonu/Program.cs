@@ -12,6 +12,7 @@ var openAIConfig = builder.Configuration.GetSection("OpenAI");
 
 // Add services to the container.   
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddHttpClient();
 
 // DbContext servisini ekle
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

@@ -3,6 +3,70 @@
   "WorkspaceRootPath": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\randevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\randevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\randevu\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\randevu\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\uyerandevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\uyerandevucontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\models\\randevu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:models\\randevu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\uyecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\uyecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\uyerandevu\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\uyerandevu\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\aiegzersizoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\aiegzersizoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\denemecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\denemecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\hizmetcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\hizmetcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\antrenorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\antrenorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\controllers\\musaitliksaaticontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:controllers\\musaitliksaaticontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\aiegzersizoneri\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\aiegzersizoneri\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -27,16 +91,8 @@
       "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\services\\mockopenaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:services\\mockopenaiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\views\\aiegzersizoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|solutionrelative:views\\aiegzersizoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{86CCCDFA-5709-5E26-70E9-B5D757660159}|YeniSalon.csproj|c:\\users\\mkara\\onedrive\\masa\u00FCst\u00FC\\web proje\\sporsalonu\\extensions\\enumextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -58,7 +114,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,7 +122,210 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\Randevu\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\Randevu\\Details.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\Randevu\\Details.cshtml",
+              "RelativeToolTip": "Views\\Randevu\\Details.cshtml",
+              "ViewState": "AgIAAAkBAAAAAAAAAAAgwBcBAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T17:26:04.165Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "Randevu.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Models\\Randevu.cs",
+              "RelativeDocumentMoniker": "Models\\Randevu.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Models\\Randevu.cs",
+              "RelativeToolTip": "Models\\Randevu.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA5wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T17:15:04.922Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Views\\UyeRandevu\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Edit.cshtml",
+              "RelativeToolTip": "Views\\UyeRandevu\\Edit.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T17:02:40.295Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\UyeRandevu\\Index.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Index.cshtml",
+              "RelativeToolTip": "Views\\UyeRandevu\\Index.cshtml",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAgwGkAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T17:02:16.928Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "DenemeController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\DenemeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\DenemeController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\DenemeController.cs",
+              "RelativeToolTip": "Controllers\\DenemeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:41:32.969Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "MusaitlikSaatiController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\MusaitlikSaatiController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MusaitlikSaatiController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\MusaitlikSaatiController.cs",
+              "RelativeToolTip": "Controllers\\MusaitlikSaatiController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:41:00.105Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RandevuController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\RandevuController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RandevuController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\RandevuController.cs",
+              "RelativeToolTip": "Controllers\\RandevuController.cs",
+              "ViewState": "AgIAAGwBAAAAAAAAAAAowGEBAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:40:57.713Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UyeController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\UyeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UyeController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\UyeController.cs",
+              "RelativeToolTip": "Controllers\\UyeController.cs",
+              "ViewState": "AgIAAIgBAAAAAAAAAAAowHQBAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:40:53.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UyeRandevuController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\UyeRandevuController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UyeRandevuController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\UyeRandevuController.cs",
+              "RelativeToolTip": "Controllers\\UyeRandevuController.cs",
+              "ViewState": "AgIAAOQAAAAAAAAAAAAgwOsAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:13:45.806Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\UyeRandevu\\Details.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Details.cshtml",
+              "RelativeToolTip": "Views\\UyeRandevu\\Details.cshtml",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAgwJMAAABfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T17:02:46.918Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\UyeRandevu\\Create.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\UyeRandevu\\Create.cshtml",
+              "RelativeToolTip": "Views\\UyeRandevu\\Create.cshtml",
+              "ViewState": "AgIAAL8BAAAAAAAAAAAAAC4BAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-17T09:53:24.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:41:00.891Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "HizmetController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\HizmetController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HizmetController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\HizmetController.cs",
+              "RelativeToolTip": "Controllers\\HizmetController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:38:11.819Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:47:59.462Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "AntrenorController.cs",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\AntrenorController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AntrenorController.cs",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\AntrenorController.cs",
+              "RelativeToolTip": "Controllers\\AntrenorController.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAgwEgAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T10:38:12.209Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\AIEgzersizOneri\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\AIEgzersizOneri\\Index.cshtml",
+              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\AIEgzersizOneri\\Index.cshtml",
+              "RelativeToolTip": "Views\\AIEgzersizOneri\\Index.cshtml",
+              "ViewState": "AgIAACYAAAAAAAAAAAAgwIMAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T18:52:04.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "IOpenAIService.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Services\\IOpenAIService.cs",
               "RelativeDocumentMoniker": "Services\\IOpenAIService.cs",
@@ -74,12 +333,11 @@
               "RelativeToolTip": "Services\\IOpenAIService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T19:14:06.735Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T19:14:06.735Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 22,
               "Title": "MockOpenAIService.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Services\\MockOpenAIService.cs",
               "RelativeDocumentMoniker": "Services\\MockOpenAIService.cs",
@@ -87,12 +345,11 @@
               "RelativeToolTip": "Services\\MockOpenAIService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T19:05:11.046Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T19:05:11.046Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 19,
               "Title": "OpenAIService.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Services\\OpenAIService.cs",
               "RelativeDocumentMoniker": "Services\\OpenAIService.cs",
@@ -100,12 +357,11 @@
               "RelativeToolTip": "Services\\OpenAIService.cs",
               "ViewState": "AgIAAKgAAAAAAAAAAAA6wKsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T18:58:28.611Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T18:58:28.611Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 21,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -113,38 +369,11 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-16T18:53:48.271Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T18:53:48.271Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAawCoAAABAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T18:53:34.624Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\AIEgzersizOneri\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\AIEgzersizOneri\\Index.cshtml",
-              "ToolTip": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\AIEgzersizOneri\\Index.cshtml",
-              "RelativeToolTip": "Views\\AIEgzersizOneri\\Index.cshtml",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAawFcAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-16T18:52:04.937Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 17,
               "Title": "AIEgzersizOneriController.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Controllers\\AIEgzersizOneriController.cs",
               "RelativeDocumentMoniker": "Controllers\\AIEgzersizOneriController.cs",
@@ -152,12 +381,11 @@
               "RelativeToolTip": "Controllers\\AIEgzersizOneriController.cs",
               "ViewState": "AgIAAEoBAAAAAAAAAAAowGsBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T18:51:39.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T18:51:39.355Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 18,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\AIEgzersizOneri\\Create.cshtml",
               "RelativeDocumentMoniker": "Views\\AIEgzersizOneri\\Create.cshtml",
@@ -165,12 +393,11 @@
               "RelativeToolTip": "Views\\AIEgzersizOneri\\Create.cshtml",
               "ViewState": "AgIAAHgBAAAAAAAAAAAowJMBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-16T18:52:32.535Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T18:52:32.535Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 16,
               "Title": "Details.cshtml",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Views\\AIEgzersizOneri\\Details.cshtml",
               "RelativeDocumentMoniker": "Views\\AIEgzersizOneri\\Details.cshtml",
@@ -178,12 +405,11 @@
               "RelativeToolTip": "Views\\AIEgzersizOneri\\Details.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAIUAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-16T18:52:22.672Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T18:52:22.672Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 23,
               "Title": "EnumExtensions.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Extensions\\EnumExtensions.cs",
               "RelativeDocumentMoniker": "Extensions\\EnumExtensions.cs",
@@ -191,12 +417,11 @@
               "RelativeToolTip": "Extensions\\EnumExtensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T19:02:53.428Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T19:02:53.428Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 24,
               "Title": "ApplicationUser.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Models\\ApplicationUser.cs",
               "RelativeDocumentMoniker": "Models\\ApplicationUser.cs",
@@ -204,12 +429,11 @@
               "RelativeToolTip": "Models\\ApplicationUser.cs",
               "ViewState": "AgIAACwAAAAAAAAAAAAAwEQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T19:02:33.041Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T19:02:33.041Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 25,
               "Title": "AIEgzersizOneri.cs",
               "DocumentMoniker": "C:\\Users\\mkara\\OneDrive\\Masa\u00FCst\u00FC\\WEB Proje\\SporSalonu\\Models\\AIEgzersizOneri.cs",
               "RelativeDocumentMoniker": "Models\\AIEgzersizOneri.cs",
@@ -217,8 +441,7 @@
               "RelativeToolTip": "Models\\AIEgzersizOneri.cs",
               "ViewState": "AgIAACsAAAAAAAAAAAAkwEUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-16T16:56:57.295Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T16:56:57.295Z"
             }
           ]
         }

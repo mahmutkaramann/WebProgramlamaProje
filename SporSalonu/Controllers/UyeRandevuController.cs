@@ -207,16 +207,9 @@ namespace YeniSalon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Randevu randevu)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
 
-            // Kullanıcı ID'sini ayarla
-            randevu.KullaniciId = user.Id;
-            randevu.Durum = RandevuDurumu.Beklemede;
-            randevu.OlusturulmaTarihi = DateTime.Now;
+            //randevu.Durum = RandevuDurumu.Beklemede;
+            //randevu.OlusturulmaTarihi = DateTime.Now;
 
             if (ModelState.IsValid)
             {
@@ -241,7 +234,7 @@ namespace YeniSalon.Controllers
                     {
                         TempData["ErrorMessage"] = "Seçtiğiniz saat artık müsait değil. Lütfen başka bir saat seçin.";
                         await PopulateCreateViewBags();
-                        return View(randevu);
+                        return RedirectToAction(nameof(Index));
                     }
 
                     _context.Add(randevu);
@@ -1072,6 +1065,10 @@ namespace YeniSalon.Controllers
                     Text = $"{h.HizmetAdi} - {h.Ucret:C2} - {h.SureDakika} dk"
                 })
                 .ToListAsync();
+
+            var user = await _userManager.GetUserAsync(User);
+            if(user != null)
+                ViewBag.userId = user.Id;
         }
 
         private async Task PopulateEditViewBags(Randevu randevu)
