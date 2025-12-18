@@ -18,8 +18,10 @@ namespace YeniSalon.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Contact()
         {
+            ViewBag.Message = "Ýletiþim sayfam.";
+
             return View();
         }
 

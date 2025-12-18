@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Api\" />
+    <Folder Include="Images\" />
     <Folder Include="wwwroot\uploads\ai-requests\" />
   </ItemGroup>
 

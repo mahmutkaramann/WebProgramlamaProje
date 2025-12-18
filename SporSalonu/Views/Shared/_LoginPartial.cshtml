@@ -3,12 +3,17 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var displayName = user?.Ad;
+}
+
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="fas fa-user"></i> @User.Identity?.Name
+                <i class="fas fa-user"></i> @(displayName ?? User.Identity?.Name)
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profil</a></li>

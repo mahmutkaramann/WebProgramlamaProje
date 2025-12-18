@@ -703,7 +703,7 @@ namespace YeniSalon.Controllers
             try
             {
                 var randevular = await _context.Randevular
-                    .Where(r => r.BitisTarihi == null || r.BitisTarihi == DateTime.MinValue)
+                    .Where(r => r.BitisTarihi == DateTime.MinValue)
                     .Include(r => r.Hizmet)
                     .ToListAsync();
 

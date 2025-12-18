@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Api 
 var openAIConfig = builder.Configuration.GetSection("OpenAI");
 
+
 // Add services to the container.   
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddHttpClient();
@@ -71,6 +72,15 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+//APÝ ÝLE
+app.MapControllerRoute(
+    name: "antrenor-mvc",
+    pattern: "AntrenorMVC/{action}/{id?}",
+    defaults: new { controller = "AntrenorMVC" });
+
+// API route'larý
+app.MapControllers(); // API controller'larý için
 
 
 // ADMÝN OLUÞTURMA
@@ -168,5 +178,6 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "!!! SEED VERÝSÝ SIRASINDA KRÝTÝK BÝR HATA OLUÞTU !!!");
     }
 }
+
 
 app.Run();
