@@ -11,12 +11,6 @@
             <a asp-action="Create" class="btn btn-primary me-2">
                 <i class="fas fa-plus"></i> Yeni Randevu
             </a>
-            <a asp-action="Calendar" class="btn btn-info me-2">
-                <i class="fas fa-calendar"></i> Takvim Görünümü
-            </a>
-            <a asp-action="Statistics" class="btn btn-success">
-                <i class="fas fa-chart-bar"></i> İstatistikler
-            </a>
         </div>
     </div>
 
@@ -126,14 +120,6 @@
                             </option>
                         }
                     </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="baslangicTarihi" class="form-label">Başlangıç Tarihi</label>
-                    <input type="date" name="baslangicTarihi" class="form-control" value="@ViewBag.BaslangicTarihi">
-                </div>
-                <div class="col-md-3">
-                    <label for="bitisTarihi" class="form-label">Bitiş Tarihi</label>
-                    <input type="date" name="bitisTarihi" class="form-control" value="@ViewBag.BitisTarihi">
                 </div>
                 <div class="col-md-6 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary me-2">

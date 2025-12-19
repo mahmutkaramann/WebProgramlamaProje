@@ -1,0 +1,93 @@
+﻿@model YeniSalon.Models.Salon
+
+@{
+    ViewData["Title"] = "Salon Sil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>@ViewData["Title"]
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-circle me-2"></i>Uyarı!
+                        </h5>
+                        <p class="mb-0">
+                            "<strong>@Model.SalonAdi</strong>" adlı salonu silmek üzeresiniz.
+                            Bu işlem geri alınamaz!
+                        </p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Salon Bilgileri</h6>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-3">Salon Adı:</dt>
+                                <dd class="col-sm-9">@Model.SalonAdi</dd>
+
+                                <dt class="col-sm-3">Adres:</dt>
+                                <dd class="col-sm-9">@Model.Adres</dd>
+
+                                <dt class="col-sm-3">Telefon:</dt>
+                                <dd class="col-sm-9">@Model.Telefon</dd>
+
+                                <dt class="col-sm-3">E-posta:</dt>
+                                <dd class="col-sm-9">@Model.Email</dd>
+
+                                <dt class="col-sm-3">Çalışma Saatleri:</dt>
+                                <dd class="col-sm-9">@Model.AcilisSaati - @Model.KapanisSaati</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.AntrenorSayisi > 0 || ViewBag.HizmetSayisi > 0)
+                    {
+                        <div class="alert alert-warning">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-2"></i>Silme Kısıtlamaları
+                            </h6>
+                            <ul class="mb-0">
+                                @if (ViewBag.AntrenorSayisi > 0)
+                                {
+                                    <li>Bu salona kayıtlı <strong>@ViewBag.AntrenorSayisi antrenör</strong> bulunmaktadır.</li>
+                                }
+                                @if (ViewBag.HizmetSayisi > 0)
+                                {
+                                    <li>Bu salona kayıtlı <strong>@ViewBag.HizmetSayisi hizmet</strong> bulunmaktadır.</li>
+                                }
+                            </ul>
+                            <p class="mb-0 mt-2">
+                                <small>Salonu silmek için önce antrenör ve hizmetleri başka bir salona taşımalısınız.</small>
+                            </p>
+                        </div>
+                    }
+
+                    <form asp-action="DeleteConfirmed" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="SalonId" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>İptal
+                            </a>
+
+                            <button type="submit" class="btn btn-danger"
+                                    @((ViewBag.AntrenorSayisi > 0 || ViewBag.HizmetSayisi > 0) ? "disabled" : "")>
+                                <i class="fas fa-trash me-1"></i>Sil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

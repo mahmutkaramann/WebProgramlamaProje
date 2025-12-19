@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Salon Yönetimi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-building me-2"></i>@ViewData["Title"]
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-list-alt fa-3x text-primary mb-3"></i>
+                                    <h5 class="card-title">API ile Salon Listesi</h5>
+                                    <p class="card-text">LINQ sorguları kullanarak gelişmiş filtreleme, sıralama ve sayfalama ile salon yönetimi.</p>
+                                    <a href="/Salon/List" class="btn btn-primary">
+                                        <i class="fas fa-external-link-alt me-1"></i>API Listesini Görüntüle
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-plus-circle fa-3x text-success mb-3"></i>
+                                    <h5 class="card-title">Yeni Salon Ekle</h5>
+                                    <p class="card-text">Yeni bir salon oluşturmak için tıklayın.</p>
+                                    <a href="/Salon/Create" class="btn btn-success">
+                                        <i class="fas fa-plus me-1"></i>Yeni Salon Ekle
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        @* <div class="col-md-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-cogs fa-3x text-warning mb-3"></i>
+                                    <h5 class="card-title">API Dokümantasyonu</h5>
+                                    <p class="card-text">Salon API endpoint'lerini test etmek ve kullanmak için.</p>
+                                    <button class="btn btn-warning" onclick="showApiEndpoints()">
+                                        <i class="fas fa-code me-1"></i>API Endpoints
+                                    </button>
+                                </div>
+                            </div>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* 
+<!-- API Endpoints Modal -->
+<div class="modal fade" id="apiEndpointsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Salon API Endpoints</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Endpoint</th>
+                            <th>Açıklama</th>
+                            <th>Parametreler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-success">GET</span></td>
+                            <td>/api/SalonApi</td>
+                            <td>Tüm salonları listele</td>
+                            <td>search, sortBy, sortOrder, page, pageSize</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-success">GET</span></td>
+                            <td>/api/SalonApi/{id}</td>
+                            <td>ID'ye göre salon getir</td>
+                            <td>id (int)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-primary">POST</span></td>
+                            <td>/api/SalonApi</td>
+                            <td>Yeni salon oluştur</td>
+                            <td>Salon nesnesi</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-warning">PUT</span></td>
+                            <td>/api/SalonApi/{id}</td>
+                            <td>Salon güncelle</td>
+                            <td>id (int), Salon nesnesi</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-danger">DELETE</span></td>
+                            <td>/api/SalonApi/{id}</td>
+                            <td>Salon sil</td>
+                            <td>id (int)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-info">GET</span></td>
+                            <td>/api/SalonApi/GetSalonStatistics/{id}</td>
+                            <td>Salon istatistikleri</td>
+                            <td>id (int)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-info">GET</span></td>
+                            <td>/api/SalonApi/GetAllSalonsForDropdown</td>
+                            <td>Dropdown için salon listesi</td>
+                            <td>Yok</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-info">GET</span></td>
+                            <td>/api/SalonApi/CheckAvailability/{id}</td>
+                            <td>Salon müsaitlik kontrolü</td>
+                            <td>id (int), date, time</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+@section Scripts {
+    <script>
+        function showApiEndpoints() {
+            new bootstrap.Modal(document.getElementById('apiEndpointsModal')).show();
+        }
+
+        // API testi yap
+        async function testApi() {
+            try {
+                const response = await fetch('/api/SalonApi');
+                const data = await response.json();
+                console.log('API Test Başarılı:', data);
+                alert('API bağlantısı başarılı!');
+            } catch (error) {
+                console.error('API Test Hatası:', error);
+                alert('API bağlantısı başarısız!');
+            }
+        }
+    </script>
+}

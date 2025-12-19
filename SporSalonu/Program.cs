@@ -75,9 +75,8 @@ app.MapControllerRoute(
 
 //APÝ ÝLE
 app.MapControllerRoute(
-    name: "antrenor-mvc",
-    pattern: "AntrenorMVC/{action}/{id?}",
-    defaults: new { controller = "AntrenorMVC" });
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // API route'larý
 app.MapControllers(); // API controller'larý için

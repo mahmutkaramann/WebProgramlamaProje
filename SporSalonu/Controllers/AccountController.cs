@@ -121,6 +121,7 @@ namespace YeniSalon.Controllers
 
         // GET: /Account/AccessDenied
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return View();
@@ -171,13 +172,19 @@ namespace YeniSalon.Controllers
                     return NotFound();
                 }
 
+                // Admin için değiştirilebilir alanlar
                 user.Ad = model.Ad;
                 user.Soyad = model.Soyad;
                 user.Adres = model.Adres;
-                user.Boy = model.Boy;
-                user.Kilo = model.Kilo;
-                user.UyelikTuru = model.UyelikTuru;
                 user.ProfilFotoUrl = model.ProfilFotoUrl;
+
+                // Sadece admin değilse bu alanları güncelle
+                if (!User.IsInRole("Admin"))
+                {
+                    user.Boy = model.Boy;
+                    user.Kilo = model.Kilo;
+                    user.UyelikTuru = model.UyelikTuru;
+                }
 
                 var result = await _userManager.UpdateAsync(user);
 
@@ -195,6 +202,8 @@ namespace YeniSalon.Controllers
 
             return View(model);
         }
+
+        
 
         #region Helpers
         private IActionResult RedirectToLocal(string? returnUrl)

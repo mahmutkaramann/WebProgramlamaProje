@@ -1,0 +1,34 @@
+﻿@model YeniSalon.Models.Salon
+
+@{
+    ViewData["Title"] = "Salon Detayları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>@Model.SalonAdi - Detayları</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Salon Adı:</dt>
+                <dd class="col-sm-9">@Model.SalonAdi</dd>
+
+                <dt class="col-sm-3">Adres:</dt>
+                <dd class="col-sm-9">@Model.Adres</dd>
+
+                <dt class="col-sm-3">Telefon:</dt>
+                <dd class="col-sm-9">@Model.Telefon</dd>
+
+                <dt class="col-sm-3">E-posta:</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Çalışma Saatleri:</dt>
+                <dd class="col-sm-9">@Model.AcilisSaati.ToString("hh\\:mm") - @Model.KapanisSaati.ToString("hh\\:mm")</dd>
+            </dl>
+
+            <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+        </div>
+    </div>
+</div>

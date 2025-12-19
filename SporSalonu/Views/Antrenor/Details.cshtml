@@ -102,12 +102,6 @@
                            class="btn btn-outline-info">
                             <i class="fas fa-calendar-alt"></i> Müsaitlik Saatleri
                         </a>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal"
-                                data-id="@Model.AntrenorId"
-                                data-name="@Model.Ad @Model.Soyad">
-                            <i class="fas fa-trash"></i> Sil
-                        </button>
                     </div>
                 </div>
 
@@ -116,10 +110,6 @@
                         <a asp-action="AssignServices" asp-route-id="@Model.AntrenorId"
                            class="btn btn-outline-primary">
                             <i class="fas fa-tasks"></i> Hizmet Atamaları
-                        </a>
-                        <a asp-action="Statistics" asp-route-id="@Model.AntrenorId"
-                           class="btn btn-outline-info">
-                            <i class="fas fa-chart-bar"></i> İstatistikler
                         </a>
                         @if (Model.AktifMi)
                         {
