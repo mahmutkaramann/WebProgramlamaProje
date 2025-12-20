@@ -18,10 +18,10 @@
                             <div class="card text-center h-100">
                                 <div class="card-body">
                                     <i class="fas fa-list-alt fa-3x text-primary mb-3"></i>
-                                    <h5 class="card-title">API ile Salon Listesi</h5>
-                                    <p class="card-text">LINQ sorguları kullanarak gelişmiş filtreleme, sıralama ve sayfalama ile salon yönetimi.</p>
+                                    <h5 class="card-title">Salon Listesi</h5>
+                                    <p class="card-text">Filtreleme, sıralama ve sayfalama ile salon yönetimi.</p>
                                     <a href="/Salon/List" class="btn btn-primary">
-                                        <i class="fas fa-external-link-alt me-1"></i>API Listesini Görüntüle
+                                        <i class="fas fa-external-link-alt me-1"></i>Liste Görüntüle
                                     </a>
                                 </div>
                             </div>
@@ -132,22 +132,4 @@
 </div> *@
 
 @section Scripts {
-    <script>
-        function showApiEndpoints() {
-            new bootstrap.Modal(document.getElementById('apiEndpointsModal')).show();
-        }
-
-        // API testi yap
-        async function testApi() {
-            try {
-                const response = await fetch('/api/SalonApi');
-                const data = await response.json();
-                console.log('API Test Başarılı:', data);
-                alert('API bağlantısı başarılı!');
-            } catch (error) {
-                console.error('API Test Hatası:', error);
-                alert('API bağlantısı başarısız!');
-            }
-        }
-    </script>
 }

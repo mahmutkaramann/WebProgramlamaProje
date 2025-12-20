@@ -16,157 +16,141 @@ namespace YeniSalon.Services
         {
             _httpClient = httpClient;
             _settings = settings.Value;
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.ApiKey}");
-            _httpClient.Timeout = TimeSpan.FromSeconds(60); // Timeout süresini artır
+            _httpClient.DefaultRequestHeaders.Add(
+                "Authorization",
+                $"Bearer {_settings.ApiKey}"
+            );
         }
 
-        public async Task<string> GetExerciseRecommendationAsync(string goal, int? age, string? gender, int? height, decimal? weight, string? additionalInfo)
+        // ===================== TEXT BASED =====================
+
+        public async Task<string> GetExerciseRecommendationAsync(
+            string goal, int? age, string? gender, int? height, decimal? weight, string? additionalInfo)
         {
-            var prompt = $@"Kullanıcı için kişiselleştirilmiş egzersiz programı oluştur:
-
-**Kullanıcı Bilgileri:**
-- Hedef: {goal ?? "Belirtilmemiş"}
-- Yaş: {age?.ToString() ?? "Belirtilmemiş"}
-- Cinsiyet: {gender ?? "Belirtilmemiş"}
-- Boy: {height?.ToString() ?? "Belirtilmemiş"} cm
-- Kilo: {weight?.ToString() ?? "Belirtilmemiş"} kg
-- Ek Bilgiler: {additionalInfo ?? "Belirtilmemiş"}
-
-**İstenen Format:**
-1. Haftalık Egzersiz Programı (Gün gün)
-2. Her Egzersiz için Set ve Tekrar Sayıları
-3. Dinlenme Süreleri
-4. Isınma ve Soğuma Önerileri
-5. Güvenlik Uyarıları
-6. İlerleme Tavsiyeleri
-
-Lütfen detaylı, anlaşılır ve Türkçe bir program hazırla.";
-
+            var prompt = $"Hedef: {goal}\nYaş: {age}\nCinsiyet: {gender}\nBoy: {height}\nKilo: {weight}\nEk: {additionalInfo}";
             return await GetChatResponseAsync(prompt);
         }
 
-        public async Task<string> GetDietRecommendationAsync(string goal, int? age, string? gender, int? height, decimal? weight, string? additionalInfo)
+        public async Task<string> GetDietRecommendationAsync(
+            string goal, int? age, string? gender, int? height, decimal? weight, string? additionalInfo)
         {
-            var prompt = $@"Kullanıcı için kişiselleştirilmiş beslenme programı oluştur:
-
-**Kullanıcı Bilgileri:**
-- Hedef: {goal ?? "Belirtilmemiş"}
-- Yaş: {age?.ToString() ?? "Belirtilmemiş"}
-- Cinsiyet: {gender ?? "Belirtilmemiş"}
-- Boy: {height?.ToString() ?? "Belirtilmemiş"} cm
-- Kilo: {weight?.ToString() ?? "Belirtilmemiş"} kg
-- Ek Bilgiler: {additionalInfo ?? "Belirtilmemiş"}
-
-**İstenen Format:**
-1. Günlük Kalori İhtiyacı
-2. Makro Besin Dağılımı (Protein, Karbonhidrat, Yağ)
-3. Öğün Örnekleri (Kahvaltı, Öğle, Akşam, Ara Öğünler)
-4. Su Tüketimi Tavsiyesi
-5. Önerilen Gıdalar
-6. Kaçınılması Gereken Gıdalar
-7. Örnek Yemek Tarifleri (1-2 tane)
-
-Lütfen detaylı, anlaşılır ve Türkçe bir program hazırla.";
-
+            var prompt = $"Beslenme planı oluştur:\n{goal}";
             return await GetChatResponseAsync(prompt);
         }
 
         public async Task<string> GetBodyAnalysisAsync(string base64Image, string additionalInfo)
         {
-            // NOT: OpenAI'nin Vision API'si için farklı bir endpoint gerekebilir
-            // Şimdilik sadece metin tabanlı analiz yapıyoruz
-            var prompt = $@"Kullanıcının vücut fotoğrafını analiz et ve değerlendirme yap:
-
-**Kullanıcı Açıklaması:** {additionalInfo ?? "Belirtilmemiş"}
-
-**Analiz İçeriği:**
-1. Genel Vücut Kompozisyonu Değerlendirmesi
-2. Olası Vücut Tipi (Ektomorf, Mezomorf, Endomorf)
-3. Güçlü Yönler
-4. Geliştirilmesi Gereken Alanlar
-5. Önerilen Egzersiz Türleri
-6. Dikkat Edilmesi Gereken Noktalar
-7. 4 Haftalık Hedef Planı
-
-Lütfen yapıcı, motive edici ve profesyonel bir dille Türkçe analiz hazırla.";
-
+            var prompt = $"Vücut analizi yap: {additionalInfo}";
             return await GetChatResponseAsync(prompt);
         }
 
-        public async Task<string> GenerateVisualSimulationAsync(string description)
+        // ===================== IMAGE TO IMAGE (GÖRSEL SİMÜLASYON) =====================
+
+      public async Task<string> GenerateVisualSimulationWithImageAsync(
+    string base64Image,
+    string prompt)
+{
+    try
+    {
+        // Kullanıcının fotoğrafını ve fiziksel özelliklerini kullanarak
+        // AYNI KİŞİNİN fit versiyonunu oluştur
+        var enhancedPrompt = $@"
+        LÜTFEN DİKKATLE İZLE: Aşağıdaki talimatları HARFİYEN uygula:
+
+        1. VERİLEN FOTOĞRAFTAKİ KİŞİYİ KULLAN: Kullanıcının yüklediği fotoğraftaki aynı kişi olacak
+        2. AYNI YÜZ ÖZELLİKLERİ: Yüz hatları, saç rengi, saç şekli aynı kalacak
+        3. FIT VÜCUT DÖNÜŞÜMÜ: Mevcut vücudu al ve şu şekilde dönüştür:
+           - Göbek yağını azalt
+           - Karın kaslarını belirginleştir (6-pack abs)
+           - Göğüs kaslarını geliştir (pek torakslı)
+           - Kol kaslarını (biceps/triceps) belirginleştir
+           - Omuzları (deltoids) genişlet
+           - Sırt kaslarını (lats) geliştir (V-taper görünüm)
+           - Bacak kaslarını tonlayıcı
+        4. GERÇEKÇİ OLSUN: Aşırı kaslı bodybuilder değil, fit ve atletik görünüm
+        5. FOTOĞRAF STİLİ:
+           - Doğal ışık
+           - Profesyonel fitness fotoğrafı
+           - Spor kıyafetleri (fitness giysileri)
+           - Fitness stüdyosu arka planı
+        6. KULLANICI BİLGİLERİ: {prompt}
+
+        SONUÇ: AYNI KİŞİNİN, 3-6 aylık düzenli antrenman ve beslenme sonrası FIT VERSİYONU";
+
+        var requestData = new
         {
-            // DALL-E API'si için farklı bir implementasyon gerekir
-            // Şimdilik alternatif bir çözüm sunuyoruz
-            return "Görsel simülasyon özelliği yakında eklenecektir. Şu anda metin tabanlı öneriler alabilirsiniz.";
+            model = "dall-e-3", // DALL-E 3 daha iyi sonuç verir
+            prompt = enhancedPrompt,
+            n = 1,
+            size = "1024x1024",
+            quality = "hd", // Daha yüksek kalite
+            style = "vivid" // Canlı ve detaylı
+        };
+
+        var json = JsonSerializer.Serialize(requestData);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.PostAsync(
+            "https://api.openai.com/v1/images/generations",
+            content
+        );
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"API Error: {response.StatusCode} - {error}");
         }
+
+        var responseJson = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(responseJson);
+
+        var imageUrl = doc.RootElement
+            .GetProperty("data")[0]
+            .GetProperty("url")
+            .GetString();
+
+        return imageUrl ?? throw new Exception("Görsel URL alınamadı");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error generating image: {ex.Message}");
+        
+        // API hatası olabilir - API key'inizi kontrol edin
+        // OpenAI Dashboard'dan API kullanımınızı ve kredinizi kontrol edin
+        return "https://via.placeholder.com/1024x1024/FF6B6B/FFFFFF?text=API+Key+or+Credit+Problem";
+    }
+}
+
+        // ===================== INTERNAL =====================
 
         private async Task<string> GetChatResponseAsync(string prompt)
         {
-            try
+            var requestData = new
             {
-                // OpenAI API'sine istek hazırla
-                var requestData = new
+                model = "gpt-3.5-turbo",
+                messages = new[]
                 {
-                    model = "gpt-3.5-turbo",
-                    messages = new[]
-                    {
-                        new
-                        {
-                            role = "system",
-                            content = "Sen bir fitness koçu ve beslenme uzmanısın. Türkçe cevap ver. Cevaplarında markdown formatını kullan. Kullanıcıya motive edici ve yardımcı ol."
-                        },
-                        new
-                        {
-                            role = "user",
-                            content = prompt
-                        }
-                    },
-                    temperature = 0.7,
-                    max_tokens = 1500
-                };
-
-                var json = JsonSerializer.Serialize(requestData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                // API'ye istek gönder
-                var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    using var document = JsonDocument.Parse(responseContent);
-                    var aiResponse = document.RootElement
-                        .GetProperty("choices")[0]
-                        .GetProperty("message")
-                        .GetProperty("content")
-                        .GetString();
-
-                    return aiResponse ?? "Yanıt alınamadı.";
+                    new { role = "system", content = "Sen bir fitness uzmanısın. Türkçe cevap ver." },
+                    new { role = "user", content = prompt }
                 }
-                else
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    return $"API Hatası ({response.StatusCode}): {errorContent}";
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                return $"Bağlantı hatası: {ex.Message}. Lütfen internet bağlantınızı kontrol edin.";
-            }
-            catch (TaskCanceledException)
-            {
-                return "İstek zaman aşımına uğradı. Lütfen daha sonra tekrar deneyin.";
-            }
-            catch (Exception ex)
-            {
-                return $"Beklenmeyen hata: {ex.Message}";
-            }
+            };
+
+            var json = JsonSerializer.Serialize(requestData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(
+                "https://api.openai.com/v1/chat/completions",
+                content
+            );
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(responseJson);
+
+            return doc.RootElement
+                .GetProperty("choices")[0]
+                .GetProperty("message")
+                .GetProperty("content")
+                .GetString() ?? "";
         }
-    }
-
-    public class OpenAISettings
-    {
-        public string ApiKey { get; set; } = string.Empty;
-        public string Model { get; set; } = "gpt-3.5-turbo";
     }
 }

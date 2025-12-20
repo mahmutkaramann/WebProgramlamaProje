@@ -146,20 +146,5 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        $(document).ready(function() {
-            // TC Kimlik No formatı
-            $('#TCKimlikNo').on('input', function() {
-                var value = $(this).val().replace(/\D/g, '');
-                $(this).val(value);
-            });
-
-            // Saatlik ücret formatı
-            $('#SaatlikUcret').on('input', function() {
-                var value = $(this).val().replace(/[^\d.]/g, '');
-                $(this).val(value);
-            });
-        });
-    </script>
+    <script src="~/js/antrenorFormat.js"></script>
 }

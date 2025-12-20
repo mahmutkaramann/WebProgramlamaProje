@@ -109,7 +109,19 @@ namespace YeniSalon.Controllers
                 string? imageUrl = null;
                 string? aiImageUrl = null;
 
-                // Dosya yükleme
+                // Görsel simülasyon ve vücut analizi için fotoğraf ZORUNLU
+                if ((model.IstekTipi == IstekTipi.GorselSimulasyon ||
+                     model.IstekTipi == IstekTipi.VucutAnalizi) &&
+                    model.Foto == null)
+                {
+                    ModelState.AddModelError("Foto",
+                        model.IstekTipi == IstekTipi.GorselSimulasyon
+                            ? "Görsel simülasyon için fotoğraf yüklemelisiniz."
+                            : "Vücut analizi için fotoğraf yüklemelisiniz.");
+                    return View(model);
+                }
+
+                // Dosya yükleme (tüm seçenekler için opsiyonel, yukarıdaki iki seçenek için zorunlu)
                 if (model.Foto != null && model.Foto.Length > 0)
                 {
                     if (model.Foto.Length > 5 * 1024 * 1024)
@@ -159,49 +171,55 @@ namespace YeniSalon.Controllers
                         break;
 
                     case IstekTipi.GorselSimulasyon:
-                        if (!string.IsNullOrEmpty(model.GirilenBilgi))
+                        using (var ms = new MemoryStream())
                         {
+                            await model.Foto.CopyToAsync(ms);
+                            var base64Image = Convert.ToBase64String(ms.ToArray());
+
+                            // Daha spesifik prompt oluştur
+                            var simulationPrompt = $@"
+                                Fotoğraftaki kişinin FIT versiyonunu oluştur.
+        
+                                KİŞİSEL BİLGİLER:
+                                - Yaş: {model.Yas}
+                                - Cinsiyet: {model.Cinsiyet}
+                                - Boy: {model.Boy} cm
+                                - Kilo: {model.Kilo} kg
+                                - Hedef: {model.Hedef}
+                                - Ek bilgi: {model.GirilenBilgi}
+
+                                TALİMAT: Fotoğraftaki AYNI KİŞİ olacak, sadece vücut fit hale gelecek.
+                                Yüz özellikleri değişmeyecek, sadece vücut yağ oranı düşüp kas oranı artacak.
+                                Gerçekçi bir 6 aylık fitness dönüşümü gibi görünecek.";
+
                             try
                             {
-                                aiResponse = await _openAIService.GenerateVisualSimulationAsync(model.GirilenBilgi);
-                                // Görsel simülasyon için uygun mesaj
-                                if (aiResponse.Contains("http") || aiResponse.Contains("www"))
-                                {
-                                    aiImageUrl = aiResponse;
-                                    aiResponse = "Görsel simülasyon başarıyla oluşturuldu. Aşağıda oluşturulan görseli görebilirsiniz.";
-                                }
+                                aiImageUrl = await _openAIService.GenerateVisualSimulationWithImageAsync(
+                                    base64Image,
+                                    simulationPrompt
+                                );
+
+                                aiResponse = "Görsel simülasyon başarıyla oluşturuldu. Yukarıdaki görsel, yapay zeka tarafından oluşturulmuş tahmini bir fitness dönüşümüdür. NOT: Bu, aynı kişinin fit versiyonudur.";
                             }
                             catch (Exception ex)
                             {
-                                aiResponse = $"Görsel simülasyon oluşturulamadı: {ex.Message}";
+                                aiResponse = $"Görsel simülasyon oluşturulurken hata: {ex.Message}";
                             }
                         }
                         break;
 
                     case IstekTipi.VucutAnalizi:
-                        if (model.Foto != null)
+                        // Fotoğraf kontrolü yapıldı (yukarıda)
+                        using (var memoryStream = new MemoryStream())
                         {
-                            try
-                            {
-                                using var memoryStream = new MemoryStream();
-                                await model.Foto.CopyToAsync(memoryStream);
-                                var imageBytes = memoryStream.ToArray();
-                                var base64Image = Convert.ToBase64String(imageBytes);
+                            await model.Foto.CopyToAsync(memoryStream);
+                            var imageBytes = memoryStream.ToArray();
+                            var base64Image = Convert.ToBase64String(imageBytes);
 
-                                aiResponse = await _openAIService.GetBodyAnalysisAsync(
-                                    base64Image,
-                                    model.GirilenBilgi
-                                );
-                            }
-                            catch (Exception ex)
-                            {
-                                aiResponse = $"Vücut analizi sırasında hata: {ex.Message}";
-                            }
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("Foto", "Vücut analizi için fotoğraf yüklemelisiniz.");
-                            return View(model);
+                            aiResponse = await _openAIService.GetBodyAnalysisAsync(
+                                base64Image,
+                                model.GirilenBilgi
+                            );
                         }
                         break;
                 }
@@ -231,7 +249,6 @@ namespace YeniSalon.Controllers
             }
             catch (Exception ex)
             {
-                // Hata durumunda kullanıcı bilgilerini koru
                 TempData["ErrorMessage"] = $"Bir hata oluştu: {ex.Message}";
                 ModelState.AddModelError("", $"Bir hata oluştu: {ex.Message}");
                 return View(model);
@@ -346,7 +363,7 @@ namespace YeniSalon.Controllers
         [MaxLength(500)]
         public string? Hedef { get; set; }
 
-        [Display(Name = "Fotoğraf (Vücut Analizi için)")]
+        [Display(Name = "Fotoğraf")]
         public IFormFile? Foto { get; set; }
 
         [Display(Name = "Mevcut Fotoğraf URL")]

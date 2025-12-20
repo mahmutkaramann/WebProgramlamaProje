@@ -21,6 +21,7 @@
                     }
 
                     <form asp-action="Create" method="post" enctype="multipart/form-data" id="aiForm">
+                        <!-- İstek Tipi -->
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -73,11 +74,13 @@
                             </div>
                         </div>
 
-                        <!-- Fotoğraf Yükleme -->
+                        <!-- Fotoğraf Yükleme - İLK BAŞTA GİZLİ -->
                         <div class="mb-3" id="fotoSection" style="display: none;">
-                            <label asp-for="Foto" class="form-label">Fotoğraf Yükle</label>
+                            <label asp-for="Foto" class="form-label"></label>
                             <input asp-for="Foto" class="form-control" type="file" accept="image/*" id="fotoInput">
-                            <small class="text-muted">Sadece Vücut Analizi için gereklidir. Max 5MB</small>
+                            <small class="text-muted" id="fotoDescription">
+                                <!-- JavaScript ile doldurulacak -->
+                            </small>
                             <span asp-validation-for="Foto" class="text-danger"></span>
                             <div class="mt-2" id="fotoPreview"></div>
                         </div>
@@ -153,219 +156,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script>
-        $(document).ready(function() {
-            // İstek tipine göre fotoğraf bölümünü göster/gizle
-            $('#istekTipi').change(function() {
-                var selectedType = $(this).val();
-                var isVucutAnalizi = selectedType === '@IstekTipi.VucutAnalizi';
-
-                if (isVucutAnalizi) {
-                    $('#fotoSection').slideDown(300);
-                    $('#fotoInput').prop('required', true);
-                    $('#bilgiLabel').text('Ek Açıklama (OPSİYONEL)');
-                    $('#girilenBilgiTextarea').attr('placeholder', 'Eklemek istediğiniz özel notlar...');
-                } else {
-                    $('#fotoSection').slideUp(300);
-                    $('#fotoInput').prop('required', false);
-                    $('#bilgiLabel').text('Açıklama / Soru');
-                    $('#girilenBilgiTextarea').attr('placeholder', 'Detaylı bilgi verirseniz daha iyi öneriler alabilirsiniz...');
-                }
-
-                // Görsel simülasyon için özel mesaj
-                if (selectedType === '@IstekTipi.GorselSimulasyon') {
-                    $('#bilgiLabel').text('Görsel Açıklaması');
-                    $('#girilenBilgiTextarea').attr('placeholder', 'Oluşturulmasını istediğiniz görselin detaylı açıklamasını yazın...');
-                }
-            });
-
-            // Karakter sayacı
-            $('#girilenBilgiTextarea').on('input', function() {
-                var length = $(this).val().length;
-                var remaining = 2000 - length;
-                $('#charCount').text('(' + length + '/2000 karakter)');
-
-                if (remaining < 0) {
-                    $('#charCount').addClass('text-danger');
-                } else if (remaining < 100) {
-                    $('#charCount').addClass('text-warning');
-                } else {
-                    $('#charCount').removeClass('text-danger text-warning');
-                }
-            });
-
-            // Fotoğraf önizleme
-            $('#fotoInput').change(function(e) {
-                var file = e.target.files[0];
-                if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
-                        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
-                        $(this).val('');
-                        $('#fotoPreview').html('');
-                        return;
-                    }
-
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#fotoPreview').html(
-                            '<div class="mt-2">' +
-                            '<img src="' + e.target.result + '" class="img-thumbnail" style="max-height: 200px;">' +
-                            '<small class="d-block text-muted mt-1">Önizleme: ' + file.name + ' (' + Math.round(file.size / 1024) + ' KB)</small>' +
-                            '</div>'
-                        );
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    $('#fotoPreview').html('');
-                }
-            });
-
-            // Hızlı öneri butonu
-            $('#quickSuggestionBtn').click(function() {
-                var hedef = $('#hedefInput').val().trim();
-                var yas = $('#yasInput').val();
-                var cinsiyet = $('#cinsiyetSelect').val();
-                var boy = $('#boyInput').val();
-                var kilo = $('#kiloInput').val();
-                var istekTipi = $('#istekTipi').val();
-
-                if (!hedef) {
-                    showAlert('Lütfen bir hedef giriniz.', 'warning');
-                    $('#hedefInput').focus();
-                    return;
-                }
-
-                // Butonu devre dışı bırak
-                var $btn = $(this);
-                $btn.prop('disabled', true);
-                $btn.html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
-
-                // Örnek prompt oluştur
-                var prompt = "Hedefim: " + hedef + "\n";
-                if (yas) prompt += "Yaşım: " + yas + "\n";
-                if (cinsiyet) prompt += "Cinsiyetim: " + (cinsiyet === '@Cinsiyet.Erkek' ? 'Erkek' : 'Kadın') + "\n";
-                if (boy) prompt += "Boyum: " + boy + " cm\n";
-                if (kilo) prompt += "Kilo: " + kilo + " kg\n\n";
-
-                // İstek tipine göre prompt düzenle
-                if (istekTipi === '@IstekTipi.EgzersizOnerisi') {
-                    prompt += "Bu bilgilere göre bana uygun bir egzersiz programı önerir misin?";
-                } else if (istekTipi === '@IstekTipi.DiyetOnerisi') {
-                    prompt += "Bu bilgilere göre bana uygun bir beslenme programı önerir misin?";
-                } else {
-                    prompt += "Bu hedefime ulaşmak için ne yapmalıyım?";
-                }
-
-                // Prompt'u textarea'ya ekle
-                $('#girilenBilgiTextarea').val(prompt).trigger('input');
-
-                // Butonu eski haline getir
-                setTimeout(function() {
-                    $btn.prop('disabled', false);
-                    $btn.html('<i class="fas fa-bolt"></i> Hızlı Öneri');
-                    showAlert('Hızlı öneri metni oluşturuldu! Dilediğiniz gibi düzenleyebilirsiniz.', 'success');
-                }, 1000);
-            });
-
-            // AJAX hızlı öneri (isteğe bağlı - backend hazırsa kullanın)
-            function quickSuggestionAjax() {
-                var goal = $('#hedefInput').val();
-                var age = $('#yasInput').val();
-                var gender = $('#cinsiyetSelect').val();
-                var height = $('#boyInput').val();
-                var weight = $('#kiloInput').val();
-
-                $.ajax({
-                    url: '@Url.Action("QuickExerciseSuggestion", "AIEgzersizOneri")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        goal: goal,
-                        age: age,
-                        gender: gender,
-                        height: height,
-                        weight: weight
-                    }),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#girilenBilgiTextarea').val(response.response);
-                            showAlert('Hızlı öneri başarıyla alındı!', 'success');
-                        } else {
-                            showAlert('Bir hata oluştu: ' + response.error, 'danger');
-                        }
-                    },
-                    error: function() {
-                        showAlert('Sunucu hatası. Lütfen tekrar deneyin.', 'danger');
-                    }
-                });
-            }
-
-            // Form gönderim butonunu yönet
-            $('#aiForm').on('submit', function() {
-                var istekTipi = $('#istekTipi').val();
-                var girilenBilgi = $('#girilenBilgiTextarea').val().trim();
-
-                if (!istekTipi) {
-                    showAlert('Lütfen bir istek tipi seçiniz.', 'warning');
-                    return false;
-                }
-
-                // Vücut analizi için fotoğraf kontrolü
-                if (istekTipi === '@IstekTipi.VucutAnalizi' && $('#fotoInput').val() === '') {
-                    showAlert('Vücut analizi için fotoğraf yüklemelisiniz.', 'warning');
-                    return false;
-                }
-
-                // Temel açıklama kontrolü (vücut analizi hariç)
-                if (istekTipi !== '@IstekTipi.VucutAnalizi' && !girilenBilgi) {
-                    showAlert('Lütfen bir açıklama veya soru giriniz.', 'warning');
-                    return false;
-                }
-
-                // Butonu devre dışı bırak ve yükleme göster
-                $('#submitBtn').prop('disabled', true);
-                $('#submitBtn').html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
-
-                return true;
-            });
-
-            // Bildirim gösterme fonksiyonu
-            function showAlert(message, type) {
-                var alertClass = 'alert-' + type;
-                var icon = type === 'success' ? 'fa-check-circle' :
-                          type === 'warning' ? 'fa-exclamation-triangle' :
-                          type === 'danger' ? 'fa-exclamation-circle' : 'fa-info-circle';
-
-                // Mevcut alert'leri temizle
-                $('.alert-dismissible:not(.alert-info)').remove();
-
-                // Yeni alert oluştur
-                var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
-                               '<i class="fas ' + icon + '"></i> ' + message +
-                               '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-                               '</div>';
-
-                $('.card-body').prepend(alertHtml);
-
-                // Otomatik kapanma
-                setTimeout(function() {
-                    $('.alert-dismissible').alert('close');
-                }, 5000);
-            }
-
-            // İlk yüklemede istek tipini kontrol et
-            var initialType = $('#istekTipi').val();
-            if (initialType === '@IstekTipi.VucutAnalizi') {
-                $('#fotoSection').show();
-                $('#fotoInput').prop('required', true);
-                $('#bilgiLabel').text('Ek Açıklama (OPSİYONEL)');
-                $('#girilenBilgiTextarea').attr('placeholder', 'Eklemek istediğiniz özel notlar...');
-            }
-
-            // Karakter sayacını başlat
-            $('#girilenBilgiTextarea').trigger('input');
-        });
-    </script>
+    <script src="~/js/aiEgzersizCreate.js"></script>
 
     <style>
         #quickSuggestionBtn:hover {

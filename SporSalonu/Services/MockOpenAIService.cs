@@ -89,5 +89,14 @@ namespace YeniSalon.Services
             await Task.Delay(1000);
             return "https://example.com/simulated-image.jpg";
         }
+
+        public async Task<string> GenerateVisualSimulationWithImageAsync(string base64Image, string prompt)
+        {
+            await Task.Delay(1000); // Simüle edilmiş gecikme
+
+            // Burada gerçek API çağrısı yapılacak
+            // Şimdilik test için sabit bir URL döndürelim
+            return "https://via.placeholder.com/1024x1024/4CAF50/FFFFFF?text=AI+Generated+Fitness+Transformation";
+        }
     }
 }

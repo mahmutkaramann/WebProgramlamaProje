@@ -103,53 +103,17 @@
     </style>
 }
 
+
+
 @section Scripts {
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/tr.min.js'></script>
+    <!-- Takvim verilerini aktar -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-
-            // Takvim verilerini hazırla
-            var events = @Html.Raw(Json.Serialize(ViewBag.TakvimVerileri));
-
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'tr',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: events.map(function(event) {
-                    return {
-                        id: event.id,
-                        title: event.title,
-                        start: event.start,
-                        end: event.end,
-                        color: event.color,
-                        extendedProps: {
-                            antrenorAdi: event.antrenorAdi,
-                            hizmetAdi: event.hizmetAdi,
-                            durum: event.durum
-                        }
-                    };
-                }),
-                eventClick: function(info) {
-                    // Randevu detaylarına git
-                    window.location.href = '/UyeRandevu/Details/' + info.event.id;
-                },
-                eventMouseEnter: function(info) {
-                    // Tooltip göster
-                    info.el.setAttribute('title',
-                        info.event.extendedProps.antrenorAdi + ' - ' +
-                        info.event.extendedProps.hizmetAdi + '\n' +
-                        'Durum: ' + info.event.extendedProps.durum
-                    );
-                }
-            });
-
-            calendar.render();
-        });
+        window.takvimVerileri = @Html.Raw(Json.Serialize(ViewBag.TakvimVerileri));
     </script>
+
+    <!-- JS dosyası -->
+    <script src="~/js/uyeRandevuCalendar.js"></script>
+    
 }

@@ -131,28 +131,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        // String truncate extension
-        String.prototype.Truncate = function(maxLength) {
-            if (this.length <= maxLength) return this;
-            return this.substring(0, maxLength) + '...';
-        };
-
-        // Checkbox seçildiğinde kartı vurgula
-        $(document).ready(function() {
-            $('input[name="hizmetIds"]').change(function() {
-                var card = $(this).closest('.card');
-                if ($(this).is(':checked')) {
-                    card.addClass('border-primary').removeClass('border-secondary');
-                } else {
-                    card.removeClass('border-primary').addClass('border-secondary');
-                }
-            });
-
-            // İlk yüklemede kartları vurgula
-            $('input[name="hizmetIds"]:checked').each(function() {
-                $(this).closest('.card').addClass('border-primary').removeClass('border-secondary');
-            });
-        });
-    </script>
+    <script src="~/js/antrenorHizmetAtama.js"></script>
 }
